@@ -11,7 +11,7 @@ rm(list = ls())
 
 
 setwd(
-  "C:/Users/sabla/Documents/Research/Undergraduate_Research_Data/SWMPr_NorthCarolinaWQOnly"
+  "C:/Users/sabla/Documents/Research/FirstDownload_old/Undergraduate_Research_Data/SWMPr_NorthCarolinaWQOnly"
 )
 install.packages("ggpubr")
 
@@ -54,7 +54,7 @@ readInFiles <- function(file_list) {
 
 #Gets all water quality spreadsheets given you enter its site name (multiple sites can be selected at once)
 getFiles <- function() {
-  setwd("C:/Users/sabla/Documents/Research/Undergraduate_Research_Data/SWMPr_Data_For_R")
+  setwd("C:/Users/sabla/Documents/Research/FirstDownload_old/Undergraduate_Research_Data/SWMPr_Data_For_R")
   
   data <- list.files(path = ".", pattern = ".csv")
   filtered <- grep("wq", data)
