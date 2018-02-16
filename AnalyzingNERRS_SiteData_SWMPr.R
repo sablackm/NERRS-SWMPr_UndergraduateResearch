@@ -4,14 +4,17 @@ library("SWMPr")
 library("tidyverse")
 
 
-path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+path <- "/Users/samuelblackman/Desktop/Research/SouthEast"
 wq_dat <- import_local(path, 'acebbwq')
 SC_wq_dat <- qaqc(wq_dat)
 View(wq_dat)
 View(SC_wq_dat)
 
+station_meta_data<-read.csv("/Users/samuelblackman/Desktop/Research/sampling_stations_edited.csv")
+View(station_meta_data)
 
-
+southeast_station_metadata<-subset(station_meta_data,station_meta_data$NERR.Site.ID == 'ace',station_meta_data$NERR.Site.ID == 'gtm',station_meta_data$NERR.Site.ID == 'niw',station_meta_data$NERR.Site.ID == 'noc',station_meta_data$NERR.Site.ID == 'sap')
+View(southeast_station_metadata)
 
 
 #Learning SWMPr
