@@ -1,17 +1,42 @@
 install.packages("SWMPr")
 install.packages("tidyverse")
+install.packages("dplyr")
+
+rm(list = ls())
+
+
 library("SWMPr")
 library("tidyverse")
+library("dplyr")
 
 
-path <- "/Users/samuelblackman/Desktop/Research/SouthEast"
-wq_dat <- import_local(path, 'acebbwq')
-SC_wq_dat <- qaqc(wq_dat)
-View(wq_dat)
-View(SC_wq_dat)
 
-station_meta_data<-read.csv("/Users/samuelblackman/Desktop/Research/sampling_stations_edited.csv")
-View(station_meta_data)
+#Get the data set of your desired site code
+path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+data_collected <- import_local(path, 'acebbwq')
+wq_dat <- qaqc(data_collected)
+
+#Enter the name of the sitecode again here (used for pulling meta data)
+Sitecode <- rep("acebbwq",nrow(wq_dat))
+Row <- rep(2,nrow(wq_dat))
+
+wq_dat <- cbind(wq_dat, Sitecode)
+wq_dat <- cbind(wq_dat, Row)
+
+#Pull in meta data and attach it to the dataset
+station_meta_data<-read.csv("C:/Users/sabla/Documents/Research/SecondDownload_Current/sampling_stations_edited.csv")
+test <- merge(wq_dat,station_meta_data, by=c("Row"), all=TRUE)
+View(test)
+
+
+#Pull in meta data that I extrapolated from the meta docs and attach it to the dataset
+extra_metadata<-read.csv("C:/Users/sabla/Documents/Research/Southeast_NERRS_WQ_EstuaryTypes_finished.csv")
+test <- merge(test,extra_metadata, by="Sitecode.x", all=TRUE)
+View(test)
+
+
+
+
 
 southeast_station_metadata<-subset(station_meta_data,station_meta_data$NERR.Site.ID == 'ace',station_meta_data$NERR.Site.ID == 'gtm',station_meta_data$NERR.Site.ID == 'niw',station_meta_data$NERR.Site.ID == 'noc',station_meta_data$NERR.Site.ID == 'sap')
 View(southeast_station_metadata)
