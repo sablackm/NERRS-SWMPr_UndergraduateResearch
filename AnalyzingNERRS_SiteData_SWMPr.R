@@ -26,7 +26,8 @@ wq_dat <- cbind(wq_dat, Row)
 #Pull in meta data and attach it to the dataset
 station_meta_data<-read.csv("C:/Users/sabla/Documents/Research/SecondDownload_Current/sampling_stations_edited.csv")
 test <- merge(wq_dat,station_meta_data, by=c("Row"), all=TRUE)
-View(test)
+test1 <- merge(wq_dat, station_meta_data, by=c("Sitecode"), all=TRUE)
+View(test1)
 
 
 #Pull in meta data that I extrapolated from the meta docs and attach it to the dataset
