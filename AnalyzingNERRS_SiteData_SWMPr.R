@@ -12,27 +12,34 @@ library("dplyr")
 
 
 #Get the data set of your desired site code
-path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+#path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+path <- "/Users/samuelblackman/Desktop/Research/SouthEast"
+
 data_collected <- import_local(path, 'acebbwq')
 wq_dat <- qaqc(data_collected)
 
 #Enter the name of the sitecode again here (used for pulling meta data)
-Sitecode <- rep("acebbwq",nrow(wq_dat))
-Row <- rep(2,nrow(wq_dat))
-
+Sitecode <- rep("acebbwq   ",nrow(wq_dat))
 wq_dat <- cbind(wq_dat, Sitecode)
-wq_dat <- cbind(wq_dat, Row)
 
 #Pull in meta data and attach it to the dataset
+<<<<<<< HEAD
 station_meta_data<-read.csv("C:/Users/sabla/Documents/Research/SecondDownload_Current/sampling_stations_edited.csv")
 test <- merge(wq_dat,station_meta_data, by=c("Row"), all=TRUE)
 test1 <- merge(wq_dat, station_meta_data, by=c("Sitecode"), all=TRUE)
 View(test1)
+=======
+#station_meta_data<-read.csv("C:/Users/sabla/Documents/Research/SecondDownload_Current/sampling_stations_edited.csv")
+station_meta_data<-read.csv("/Users/samuelblackman/Desktop/Research/sampling_stations_edited.csv")
+test <- merge(wq_dat,station_meta_data, by=c("Sitecode"), all=TRUE)
+View(test)
+>>>>>>> 273683bc9435d1953e601a1716934d9440ab986f
 
 
 #Pull in meta data that I extrapolated from the meta docs and attach it to the dataset
-extra_metadata<-read.csv("C:/Users/sabla/Documents/Research/Southeast_NERRS_WQ_EstuaryTypes_finished.csv")
-test <- merge(test,extra_metadata, by="Sitecode.x", all=TRUE)
+#extra_metadata<-read.csv("C:/Users/sabla/Documents/Research/Southeast_NERRS_WQ_EstuaryTypes_finished.csv")
+extra_metadata<-read.csv("/Users/samuelblackman/Desktop/Research/Southeast_NERRS_WQ_EstuaryTypes_finished.csv")
+test <- merge(test,extra_metadata, by="Sitecode", all=TRUE)
 View(test)
 
 
