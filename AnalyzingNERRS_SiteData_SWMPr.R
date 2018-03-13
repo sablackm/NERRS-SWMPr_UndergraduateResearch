@@ -27,7 +27,7 @@ sitename = 'acefcwq'
 sitenames <- c('acemcwq', 'acespwq','gtmpcwq','niwcbwq','niwdcwq', 'niwolwq', 'niwtawq','nocrcwq','sapdcwq','acejiwq','gtmpiwq','gtmfmwq','gtmsswq','noclcwq','noczbwq','nocecwq','sapcawq','saphdwq','sapldwq')
 
 sitename2 = 'apacpwq'
-sitenames2 <- c('apadbwq', 'gndpcwq', 'gndblwq', 'marabwq', 'marcewq','marcwwq', 'marambwq', 'wkbfrwq','wkbwbwq', 'wkbmbwq', 'apalmwq','gndbhwq','gndbcwq', 'wkbmrwq')
+sitenames2 <- c('apadbwq', 'gndpcwq', 'gndblwq', 'marabwq', 'marcewq','marcwwq', 'marmbwq', 'wkbfrwq','wkbwbwq', 'wkbmbwq', 'apalmwq','gndbhwq','gndbcwq', 'wkbmrwq')
 
 data_collected <- import_local(path, sitename, trace = FALSE)
 wq_dat <- qaqc(data_collected)
@@ -279,6 +279,10 @@ wq_dat2 <- wq_dat2 %>%
   mutate(Estuary_Type = ifelse(Sitecode == 'apacpwq' | Sitecode == 'apadbwq' | Sitecode == 'gndpcwq' | Sitecode == 'gndblwq' | Sitecode == 'marabwq' | Sitecode == 'marcewq' | Sitecode == 'marcwwq' | Sitecode == 'marambwq' | Sitecode == 'wkbfrwq' | Sitecode == 'wkbwbwq' | Sitecode == 'wkbmbwq', 'Open Water', ifelse(Sitecode == 'apalmwq' | Sitecode == 'gndbhwq' | Sitecode == 'gndbcwq' | Sitecode == 'wkbmrwq','Marsh Creek', NA)))
 View(wq_dat2)
 
+#Combine Gulf and Southeast
+wq_dat <- rbind(wq_dat, wq_dat2)
+save <- wq_dat
+
 #-----------------------------------------------------------------------------------------------------------------
 #Seasonal Plots
 #SOUTHEAST
@@ -287,24 +291,26 @@ sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetim
 
 sub_dat_2 <- swmpr(sub_dat_2, "Southeast_Seasonsal_1")
 
-jpeg(file='SE_MC_DO.jpg', width = 600, height = 700, units = "px")
+jpeg(file='MC_DO.jpg', width = 600, height = 700, units = "px")
 p1 <- ggplot(sub_dat_2, aes(x=Season, y=do_mgl)) +
   geom_boxplot(outlier.shape = NA) +
   xlab("Seasons") +
   ylab("DO (mg/L)")+
-  ggtitle("Southeast Marsh Creek Seasonal DO", subtitle = "2007-2016") +
+  ylim(c(0,15)) +
+  ggtitle("Marsh Creek Seasonal DO", subtitle = "2007-2016") +
   theme_bw()
 
 print(p1)
 dev.off()
   
 
-jpeg(file='SE_MC_PH.jpg', width = 600, height = 700, units = "px")
+jpeg(file='MC_PH.jpg', width = 600, height = 700, units = "px")
 p2 <- ggplot(sub_dat_2, aes(x=Season, y=ph)) +
   geom_boxplot(outlier.shape = NA) +
   xlab("Seasons") +
   ylab("pH")+
-  ggtitle("Southeast Marsh Creek Seasonal pH", subtitle = "2007-2016") +
+  ylim(c(5,10)) +
+  ggtitle("Marsh Creek Seasonal pH", subtitle = "2007-2016") +
   theme_bw()
   
 print(p2)
@@ -315,83 +321,173 @@ sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetim
 
 sub_dat_2 <- swmpr(sub_dat_2, "Southeast_Seasonsal_2")
 
-jpeg(file='SE_OW_DO.jpg', width = 600, height = 700, units = "px")
+jpeg(file='OW_DO.jpg', width = 600, height = 700, units = "px")
 p3 <- ggplot(sub_dat_2, aes(x=Season, y=do_mgl)) +
   geom_boxplot(outlier.shape = NA) +
   xlab("Seasons") +
   ylab("DO (mg/L)")+
-  ggtitle("Southeast Open Water Seasonal DO", subtitle = "2007-2016") +
+  ylim(c(0,15)) +
+  ggtitle("Open Water Seasonal DO", subtitle = "2007-2016") +
   theme_bw()
 
 print(p3)
 dev.off()
 
-jpeg(file='SE_OW_PH.jpg', width = 600, height = 700, units = "px")
+jpeg(file='OW_PH.jpg', width = 600, height = 700, units = "px")
 p4 <- ggplot(sub_dat_2, aes(x=Season, y=ph)) +
   geom_boxplot(outlier.shape = NA) +
   xlab("Seasons") +
   ylab("pH")+
-  ggtitle("Southeast Open water Seasonal pH", subtitle = "2007-2016") +
+  ylim(c(5,10)) +
+  ggtitle("Open water Seasonal pH", subtitle = "2007-2016") +
   theme_bw()
 
 print(p4)
 dev.off()
+
+
+#DO plot overtime series 2007-2016
+
+sub_dat <- subset(wq_dat, wq_dat$Estuary_Type == "Open Water")
+sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetimestamp<='2016-12-31 23:45',]
+
+sub_dat_2 <- swmpr(sub_dat_2, "Southeast_Seasonsal_2")
+
+plot(do_mgl ~ datetimestamp, sub_dat_2)
+
+jpeg(file='OW_DO_timeseries.jpg', width = 600, height = 700, units = "px")
+p5 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=do_mgl)) +
+  geom_line() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("Open Water DO over 2007-2016") +
+  theme_bw()
+
+print(p5)
+dev.off()
+
+plot(ph ~ datetimestamp, sub_dat_2)
+
+jpeg(file='OW_PH_timeseries.jpg', width = 600, height = 700, units = "px")
+p6 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=ph)) +
+  geom_feqpoly() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(5,10)) +
+  ggtitle("Open water over pH 2007-2016") +
+  theme_bw()
+
+print(p6)
+dev.off()
+
+sub_dat <- subset(wq_dat, wq_dat$Estuary_Type == "Marsh Creek")
+sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetimestamp<='2016-12-31 23:45',]
+
+sub_dat_2 <- swmpr(sub_dat_2, "Southeast_Seasonsal_1")
+
+plot(do_mgl ~ datetimestamp, sub_dat_2)
+
+jpeg(file='MC_DO_timeseries.jpg', width = 600, height = 700, units = "px")
+p7 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=do_mgl)) +
+  geom_dotplot() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("Marsh Creek DO over 2007-2016") +
+  theme_bw()
+
+print(p7)
+dev.off()
+
+plot(ph ~ datetimestamp, sub_dat_2)
+
+jpeg(file='MC_PH_timeseries.jpg', width = 600, height = 700, units = "px")
+p8 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=ph)) +
+  geom_dotplot() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(5,10)) +
+  ggtitle("Marsh Creek over pH 2007-2016") +
+  theme_bw()
+
+print(p8)
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #GULF
-
-sub_dat <- subset(wq_dat2, wq_dat2$Estuary_Type == "Marsh Creek")
-sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetimestamp<='2016-12-31 23:45',]
-
-sub_dat_2 <- swmpr(sub_dat_2, "Gulf_Seasonsal_1")
-
-jpeg(file='G_MC_DO.jpg', width = 600, height = 700, units = "px")
-p1 <- ggplot(sub_dat_2, aes(x=Season, y=do_mgl)) +
-  geom_boxplot(outlier.shape = NA) +
-  xlab("Seasons") +
-  ylab("DO (mg/L)")+
-  ggtitle("Gulf of Mexico Marsh Creek Seasonal DO", subtitle = "2007-2016") +
-  theme_bw()
-
-print(p1)
-dev.off()
-
-jpeg(file='G_MC_PH.jpg', width = 600, height = 700, units = "px")
-p2 <- ggplot(sub_dat_2, aes(x=Season, y=ph)) +
-  geom_boxplot(outlier.shape = NA) +
-  xlab("Seasons") +
-  ylab("pH")+
-  ggtitle("Gulf of Mexico Marsh Creek Seasonal pH", subtitle = "2007-2016") +
-  theme_bw()
-
-print(p2)
-dev.off()
-
-sub_dat <- subset(wq_dat2, wq_dat2$Estuary_Type == "Open Water")
-sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetimestamp<='2016-12-31 23:45',]
-
-sub_dat_2 <- swmpr(sub_dat_2, "Gulf_Seasonsal_2")
-
-jpeg(file='G_OW_DO.jpg', width = 600, height = 700, units = "px")
-p3 <- ggplot(sub_dat_2, aes(x=Season, y=do_mgl)) +
-  geom_boxplot(outlier.shape = NA) +
-  xlab("Seasons") +
-  ylab("DO (mg/L)")+
-  ggtitle("Gulf of Mexico Open Water Seasonal DO", subtitle = "2007-2016") +
-  theme_bw()
-
-print(p3)
-dev.off()
-
-jpeg(file='G_OW_PH.jpg', width = 600, height = 700, units = "px")
-p4 <- ggplot(sub_dat_2, aes(x=Season, y=ph)) +
-  geom_boxplot(outlier.shape = NA) +
-  xlab("Seasons") +
-  ylab("pH")+
-  ggtitle("Gulf of Mexico Open water Seasonal pH", subtitle = "2007-2016") +
-  theme_bw()
-
-print(p4)
-dev.off()
+# 
+# sub_dat <- subset(wq_dat2, wq_dat2$Estuary_Type == "Marsh Creek")
+# sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetimestamp<='2016-12-31 23:45',]
+# 
+# sub_dat_2 <- swmpr(sub_dat_2, "Gulf_Seasonsal_1")
+# 
+# jpeg(file='G_MC_DO.jpg', width = 600, height = 700, units = "px")
+# p1 <- ggplot(sub_dat_2, aes(x=Season, y=do_mgl)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   xlab("Seasons") +
+#   ylab("DO (mg/L)")+
+#   ggtitle("Gulf of Mexico Marsh Creek Seasonal DO", subtitle = "2007-2016") +
+#   theme_bw()
+# 
+# print(p1)
+# dev.off()
+# 
+# jpeg(file='G_MC_PH.jpg', width = 600, height = 700, units = "px")
+# p2 <- ggplot(sub_dat_2, aes(x=Season, y=ph)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   xlab("Seasons") +
+#   ylab("pH")+
+#   ggtitle("Gulf of Mexico Marsh Creek Seasonal pH", subtitle = "2007-2016") +
+#   theme_bw()
+# 
+# print(p2)
+# dev.off()
+# 
+# sub_dat <- subset(wq_dat2, wq_dat2$Estuary_Type == "Open Water")
+# sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetimestamp<='2016-12-31 23:45',]
+# 
+# sub_dat_2 <- swmpr(sub_dat_2, "Gulf_Seasonsal_2")
+# 
+# jpeg(file='G_OW_DO.jpg', width = 600, height = 700, units = "px")
+# p3 <- ggplot(sub_dat_2, aes(x=Season, y=do_mgl)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   xlab("Seasons") +
+#   ylab("DO (mg/L)")+
+#   ggtitle("Gulf of Mexico Open Water Seasonal DO", subtitle = "2007-2016") +
+#   theme_bw()
+# 
+# print(p3)
+# dev.off()
+# 
+# jpeg(file='G_OW_PH.jpg', width = 600, height = 700, units = "px")
+# p4 <- ggplot(sub_dat_2, aes(x=Season, y=ph)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   xlab("Seasons") +
+#   ylab("pH")+
+#   ggtitle("Gulf of Mexico Open water Seasonal pH", subtitle = "2007-2016") +
+#   theme_bw()
+# 
+# print(p4)
+# dev.off()
 
 
 #Oyster Reefs:
@@ -499,7 +595,18 @@ print(p2)
 dev.off()
 
 
+#DO plot overtime series 2007-2016
 
+
+
+
+
+
+
+
+
+
+#pH plot overtime series 2007-2016
 
 
 
