@@ -14,14 +14,15 @@ library("ggplot2")
 library("reshape2")
 library("lubridate")
 
-setwd("C:/Users/sabla/Documents/Research/plots")
-
+#setwd("C:/Users/sabla/Documents/Research/plots")
+setwd("/Users/samuelblackman/Desktop/Research")
 #SOUTHEAST DATA
-path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+#path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
 
 #GULF DATA
-path2 <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/GulfOfMexico"
-#path <- "/Users/samuelblackman/Desktop/Research/SouthEast"
+#path2 <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/GulfOfMexico"
+path2 <- "/Users/samuelblackman/Desktop/Research/GulfOfMexico"
+path <- "/Users/samuelblackman/Desktop/Research/SouthEast"
 
 sitename = 'acefcwq'
 sitenames <- c('acemcwq', 'acespwq','gtmpcwq','niwcbwq','niwdcwq', 'niwolwq', 'niwtawq','nocrcwq','sapdcwq','acejiwq','gtmpiwq','gtmfmwq','gtmsswq','noclcwq','noczbwq','nocecwq','sapcawq','saphdwq','sapldwq')
@@ -353,28 +354,28 @@ sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetim
 
 sub_dat_2 <- swmpr(sub_dat_2, "Southeast_Seasonsal_2")
 
-plot(do_mgl ~ datetimestamp, sub_dat_2)
+#plot(do_mgl ~ datetimestamp, sub_dat_2)
 
 jpeg(file='OW_DO_timeseries.jpg', width = 600, height = 700, units = "px")
 p5 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=do_mgl)) +
-  geom_line() +
+  geom_point() +
   xlab("2007-2016") +
   ylab("DO (mg/L)")+
-  ylim(c(0,15)) +
+  ylim(c(0,25)) +
   ggtitle("Open Water DO over 2007-2016") +
   theme_bw()
 
 print(p5)
 dev.off()
 
-plot(ph ~ datetimestamp, sub_dat_2)
+#plot(ph ~ datetimestamp, sub_dat_2)
 
 jpeg(file='OW_PH_timeseries.jpg', width = 600, height = 700, units = "px")
 p6 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=ph)) +
-  geom_feqpoly() +
+  geom_point() +
   xlab("2007-2016") +
   ylab("pH")+
-  ylim(c(5,10)) +
+  ylim(c(2,12)) +
   ggtitle("Open water over pH 2007-2016") +
   theme_bw()
 
@@ -386,28 +387,28 @@ sub_dat_2 <- sub_dat[sub_dat$datetimestamp>='2007-01-01 00:00' & sub_dat$datetim
 
 sub_dat_2 <- swmpr(sub_dat_2, "Southeast_Seasonsal_1")
 
-plot(do_mgl ~ datetimestamp, sub_dat_2)
+#plot(do_mgl ~ datetimestamp, sub_dat_2)
 
 jpeg(file='MC_DO_timeseries.jpg', width = 600, height = 700, units = "px")
 p7 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=do_mgl)) +
-  geom_dotplot() +
+  geom_point() +
   xlab("2007-2016") +
   ylab("DO (mg/L)")+
-  ylim(c(0,15)) +
+  ylim(c(0,25)) +
   ggtitle("Marsh Creek DO over 2007-2016") +
   theme_bw()
 
 print(p7)
 dev.off()
 
-plot(ph ~ datetimestamp, sub_dat_2)
+#plot(ph ~ datetimestamp, sub_dat_2)
 
 jpeg(file='MC_PH_timeseries.jpg', width = 600, height = 700, units = "px")
 p8 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=ph)) +
-  geom_dotplot() +
+  geom_point() +
   xlab("2007-2016") +
   ylab("pH")+
-  ylim(c(5,10)) +
+  ylim(c(2,12)) +
   ggtitle("Marsh Creek over pH 2007-2016") +
   theme_bw()
 
