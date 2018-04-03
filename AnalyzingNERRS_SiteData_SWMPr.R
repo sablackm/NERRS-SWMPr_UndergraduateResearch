@@ -14,8 +14,8 @@ library("ggplot2")
 library("reshape2")
 library("lubridate")
 
-#setwd("C:/Users/sabla/Documents/Research/plots")
-setwd("/Users/samuelblackman/Desktop/Research")
+setwd("C:/Users/sabla/Documents/Research/plots")
+#setwd("/Users/samuelblackman/Desktop/Research")
 #SOUTHEAST DATA
 #path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
 
@@ -414,6 +414,682 @@ p8 <- ggplot(sub_dat_2, aes(x=datetimestamp, y=ph)) +
 
 print(p8)
 dev.off()
+
+#----------------------------------------------------------------------------------------
+#Comparing individual sites:
+
+path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+
+sitename = 'sapdcwq'
+sitename2='sapldwq'
+
+data_collected <- import_local(path, sitename, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename,nrow(wq_dat))
+dc <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename2, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename2,nrow(wq_dat))
+ld <- cbind(wq_dat, Sitecode)
+
+setwd("C:/Users/sabla/Documents/Research/Plots_for_Statistical_Analysis")
+
+sub_dat <- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='sapdcwq_MC_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("sapdcwq MC DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='sapdcwq_MC_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("sapdcwq MC pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='sapdcwq_MC_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("sapdcwq MC Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- ld[ld$datetimestamp>='2007-01-01 00:00' & ld$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='sapldwq_OW_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("sapldwq OW DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='sapldwq_OW_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("sapldwq OW pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='sapldwq_OW_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("sapldwq OW Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+#--------------------------------------------------------------------------------------------------
+path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/GulfOfMexico"
+
+sitename = 'gndbhwq'
+sitename2='gndpcwq'
+
+data_collected <- import_local(path, sitename, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename,nrow(wq_dat))
+bh <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename2, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename2,nrow(wq_dat))
+pc <- cbind(wq_dat, Sitecode)
+
+
+setwd("C:/Users/sabla/Documents/Research/Plots_for_Statistical_Analysis")
+
+sub_dat <- bh[bh$datetimestamp>='2007-01-01 00:00' & bh$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='gndbhwq_MC_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("gndbhwq MC DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='gndbhwq_MC_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("gndbhwq MC pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='gndbhwq_MC_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("gndbhwq MC Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- pc[pc$datetimestamp>='2007-01-01 00:00' & pc$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='gndpcwq_OW_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("gndpcwq OW DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='gndpcwq_OW_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("gndpcwq OW pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='gndpcwq_OW_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("gndpcwq OW Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+#----------------------------------------------------------------------------------------------------------
+
+path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+
+sitename ='acefcwq'
+sitename2='acemcwq'
+sitename3='acebbwq'
+sitename4='acespwq'
+
+data_collected <- import_local(path, sitename, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename,nrow(wq_dat))
+fc <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename2, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename2,nrow(wq_dat))
+mc <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename3, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename3,nrow(wq_dat))
+bb <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename4, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename4,nrow(wq_dat))
+sp <- cbind(wq_dat, Sitecode)
+
+
+setwd("C:/Users/sabla/Documents/Research/Plots_for_Statistical_Analysis")
+
+sub_dat <- fc[fc$datetimestamp>='2007-01-01 00:00' & fc$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='acefcwq_MC_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("acefcwq MC DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='acefcwq_MC_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("acefcwq MC pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='acefcwq_MC_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("acefcwq MC Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- mc[mc$datetimestamp>='2007-01-01 00:00' & mc$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='acemcwq_OW_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("acemcwq OW DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='acemcwq_OW_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("acemcwq OW pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='acemcwq_OW_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("acemcwq OW Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- bb[bb$datetimestamp>='2007-01-01 00:00' & bb$datetimestamp<='2015-01-07 11:45',]
+
+jpeg(file='acebbwq_OW_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("acebbwq OW DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='acebbwq_OW_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("acebbwq OW pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='acebbwq_OW_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("acebbwq OW Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- sp[sp$datetimestamp>='2007-01-01 00:00' & sp$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='acespwq_MC_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("acespwq MC DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='acespwq_MC_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("acespwq MC pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='acespwq_MC_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("acespwq MC Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+#-------------------------------------------------------------------------------------------
+path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+
+sitename = 'niwcbwq'
+sitename2='niwdcwq'
+sitename3= 'niwolwq'
+
+data_collected <- import_local(path, sitename, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename,nrow(wq_dat))
+cb <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename2, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename2,nrow(wq_dat))
+dc <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename3, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename3,nrow(wq_dat))
+ol <- cbind(wq_dat, Sitecode)
+
+setwd("C:/Users/sabla/Documents/Research/Plots_for_Statistical_Analysis")
+
+sub_dat <- cb[cb$datetimestamp>='2007-01-01 00:00' & cb$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='niwcbwq_OW_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("niwcbwq OW DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwcbwq_OW_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("niwcbwq OW pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwcbwq_OW_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("niwcbwq OW Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='niwdcwq_OW_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("niwdcwq OW DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwdcwq_OW_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("niwdcwq OW pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwdcwq_OW_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("niwdcwq OW Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- ol[ol$datetimestamp>='2016-05-11 12:45' & ol$datetimestamp<='2018-02-09 1:30',]
+
+jpeg(file='niwolwq_MC_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2016-2018") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("niwolwq MC DO over 2016-2018") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwolwq_MC_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2016-2018") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("niwolwq MC pH over 2016-2018") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwolwq_MC_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2016-2018") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("niwolwq MC Depth over 2016-2018") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+
+
+
+
+
+
+
+#Across reserves comparisons
+#--------------------------------------------------------------------
+path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+
+sitename = 'niwtawq'
+sitename2='gtmsswq'
+sitename3= 'niwwswq'
+
+data_collected <- import_local(path, sitename, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename,nrow(wq_dat))
+ta <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename2, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename2,nrow(wq_dat))
+ss <- cbind(wq_dat, Sitecode)
+
+data_collected <- import_local(path, sitename3, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename3,nrow(wq_dat))
+ws <- cbind(wq_dat, Sitecode)
+
+setwd("C:/Users/sabla/Documents/Research/Plots_for_Statistical_Analysis")
+
+sub_dat <- ta[ta$datetimestamp>='2007-01-01 00:00' & ta$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='niwtawq_MC_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("niwtawq MC DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwtawq_MC_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("niwtawq MC pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwtawq_MC_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("niwtawq MC Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- ss[ss$datetimestamp>='2007-01-01 00:00' & ss$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='gtmsswq_OW_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("gtmsswq OW DO over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='gtmsswq_OW_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("gtmsswq OW pH over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='gtmsswq_OW_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("gtmsswq OW Depth over 2007-2016") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+sub_dat <- ws[ws$datetimestamp>='2016-05-11 12:45' & ws$datetimestamp<='2018-02-09 1:30',]
+
+jpeg(file='niwwswq_OW_DO_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2016-2018") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("niwwswq OW DO over 2016-2018") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwwswq_OW_pH_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2016-2018") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("niwwswq OW pH over 2016-2018") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+jpeg(file='niwwswq_OW_Depth_timeseries.jpg', width = 800, height = 600, units = "px")
+set1 <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2016-2018") +
+  ylab("Depth (m)")+
+  ylim(c(0,6)) +
+  ggtitle("niwwswq OW Depth over 2016-2018") +
+  theme_bw()
+
+print(set1)
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
