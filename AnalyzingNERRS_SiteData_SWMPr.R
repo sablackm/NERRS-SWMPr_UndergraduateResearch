@@ -417,6 +417,119 @@ dev.off()
 
 
 
+#Ideal Marsh Creek, Open Water
+#setwd("C:/Users/sabla/Documents/Research/plots")
+setwd("/Users/samuelblackman/Desktop/Research")
+#SOUTHEAST DATA
+#path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+
+#GULF DATA
+#path2 <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/GulfOfMexico"
+#path2 <- "/Users/samuelblackman/Desktop/Research/GulfOfMexico"
+path <- "/Users/samuelblackman/Desktop/Research/SouthEast"
+
+
+sitename = 'sapdcwq'
+
+data_collected <- import_local(path, sitename, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename,nrow(wq_dat))
+sapdcwq_MC <- cbind(wq_dat, Sitecode)
+
+sitename = 'sapldwq'
+
+data_collected <- import_local(path, sitename, trace = FALSE)
+wq_dat <- qaqc(data_collected)
+Sitecode <- rep(sitename,nrow(wq_dat))
+sapldwq_OW <- cbind(wq_dat, Sitecode)
+
+
+
+
+sub_dat<- sapdcwq_MC[sapdcwq_MC$datetimestamp>='2007-01-01 00:00' & sapdcwq_MC$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='MC_ideal_do.jpg', width = 600, height = 700, units = "px")
+ideal_MC <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO")+
+  ylim(c(0,25)) +
+  ggtitle("sapdcwq over DO 2007-2016") +
+  theme_bw()
+
+print(ideal_MC)
+dev.off()
+
+jpeg(file='MC_ideal_ph.jpg', width = 600, height = 700, units = "px")
+ideal_MC <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("sapdcwq over pH 2007-2016") +
+  theme_bw()
+
+print(ideal_MC)
+dev.off()
+
+jpeg(file='MC_ideal_depth.jpg', width = 600, height = 700, units = "px")
+ideal_MC <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth")+
+  ylim(c(0,6)) +
+  ggtitle("sapdcwq over Depth 2007-2016") +
+  theme_bw()
+
+print(ideal_MC)
+dev.off()
+
+#View(sapdcwq_MC)
+#View(sapldwq_OW)
+
+sub_dat<- sapldwq_OW[sapldwq_OW$datetimestamp>='2007-01-01 00:00' & sapldwq_OW$datetimestamp<='2016-12-31 23:45',]
+
+jpeg(file='OW_ideal_do.jpg', width = 600, height = 700, units = "px")
+ideal_OW <- ggplot(sub_dat, aes(x=datetimestamp, y=do_mgl)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("DO")+
+  ylim(c(0,25)) +
+  ggtitle("sapldwq over DO 2007-2016") +
+  theme_bw()
+
+print(ideal_OW)
+dev.off()
+
+jpeg(file='OW_ideal_ph.jpg', width = 600, height = 700, units = "px")
+ideal_OW <- ggplot(sub_dat, aes(x=datetimestamp, y=ph)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("pH")+
+  ylim(c(2,12)) +
+  ggtitle("sapldwq over pH 2007-2016") +
+  theme_bw()
+
+print(ideal_OW)
+dev.off()
+
+jpeg(file='OW_ideal_depth.jpg', width = 600, height = 700, units = "px")
+ideal_OW <- ggplot(sub_dat, aes(x=datetimestamp, y=depth)) +
+  geom_point() +
+  xlab("2007-2016") +
+  ylab("Depth")+
+  ylim(c(0,6)) +
+  ggtitle("sapldwq over Depth 2007-2016") +
+  theme_bw()
+
+print(ideal_OW)
+dev.off()
+
+
+
+
+
+
 
 
 
