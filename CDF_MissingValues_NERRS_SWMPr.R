@@ -128,7 +128,7 @@ df_missing
 #-----------------------------------------------------------------------------------------------------------------------
 
 
-bh_test_2<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2007-12-31 23:45',]
+bh_test_2<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
 
 
 Sitecode <- rep('gndbhwq',nrow(bh_test_2))
@@ -140,18 +140,24 @@ bh_test_2 <-cbind(bh_test_2,diel)
 monthly<- format(as.POSIXct(bh_test_2$datetimestamp,format="%Y-%m-%d H:M"), "%Y-%m")
 bh_test_2<-cbind(bh_test_2,monthly)
 
+#Chnage to include year so that they are unique
 bh_test_2 <- bh_test_2 %>% 
   mutate(Month = month(datetimestamp)) %>% 
   mutate(Season = ifelse(Month == 1 | Month == 2 | Month == 12, "Winter",ifelse(Month == 3 | Month == 4 | Month == 5, "Spring",ifelse(Month == 6 | Month == 7 | Month == 8, "Summer",ifelse(Month == 9 | Month == 10 | Month == 11, "Fall",NA)))))
 
 #Testing my calculations for CV = STD/mean
 #If any NA's, will not calculate the CV
-bh_calculations <- bh_test_2 %>% group_by(diel) %>% summarise(diel_STD = sd(do_mgl), diel_AVG = mean(do_mgl)) %>% mutate(diel_CV=(diel_STD/diel_AVG))
-bh_test_2 <- merge(bh_test_2, bh_calculations, by="diel")
+bh_calculations_diel <- bh_test_2 %>% group_by(diel) %>% summarise(diel_STD = sd(do_mgl), diel_AVG = mean(do_mgl)) %>% mutate(diel_CV=(diel_STD/diel_AVG))
+bh_test_2 <- merge(bh_test_2, bh_calculations_diel, by="diel")
 
 
-bh_calculations <- bh_test_2 %>% group_by(monthly) %>% summarise(monthly_STD = sd(do_mgl), monthly_AVG = mean(do_mgl)) %>% mutate(monthly_CV=(monthly_STD/monthly_AVG))
-bh_test_2 <- merge(bh_test_2, bh_calculations, by="monthly")
+bh_calculations_monthly <- bh_test_2 %>% group_by(monthly) %>% summarise(monthly_STD = sd(do_mgl, na.rm=TRUE), monthly_AVG = mean(do_mgl,na.rm=TRUE)) %>% mutate(monthly_CV=(monthly_STD/monthly_AVG))
+bh_test_2 <- merge(bh_test_2, bh_calculations_monthly, by="monthly")
+
+
+bh_calculations_seasonal <- bh_test_2 %>% group_by(Season) %>% summarise(seasonal_STD = sd(do_mgl), seasonal_AVG = mean(do_mgl)) %>% mutate(seasonal_CV=(seasonal_STD/seasonal_AVG))
+bh_test_2 <- merge(bh_test_2, bh_calculations_monthly, by="Season")
+#Season is not unique, so will have issue merging. 
 
 
 #2007
