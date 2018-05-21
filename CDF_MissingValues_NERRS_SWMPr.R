@@ -19,22 +19,22 @@ library("data.table")
 
 #Importing Marshy Marsh Creek Data:
 
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfofMexico"
+path <- "C:\\Users\\sabla\\Documents\\Research\\SecondDownload_old\\GulfofMexico"
 sitename = 'gndbhwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 bh <- qaqc(data_collected)
 
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthEast"
+path <- "C:\\Users\\sabla\\Documents\\Research\\SecondDownload_old\\Southeast"
 sitename = 'sapdcwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 dc <- qaqc(data_collected)
 
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthEast"
+path <- "C:\\Users\\sabla\\Documents\\Research\\SecondDownload_old\\Southeast"
 sitename = 'sapldwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 ld <- qaqc(data_collected)
 
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthEast"
+path <- "C:\\Users\\sabla\\Documents\\Research\\SecondDownload_old\\Southeast"
 sitename = 'niwtawq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 ta <- qaqc(data_collected)
@@ -123,55 +123,106 @@ colnames(df_missing) <- c("Site","|% DO Values Missing","|% pH Values Missing")
 df_missing
 
 
+
+
 #-----------------------------------------------------------------------------------------------------------------------
 #Testing Timescale Additions to the Dataset
 #-----------------------------------------------------------------------------------------------------------------------
 
 
-bh_test_2<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
+site_analyzed<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
 
 
-Sitecode <- rep('gndbhwq',nrow(bh_test_2))
-bh_test_2 <- cbind(bh_test_2, Sitecode)
+Sitecode <- rep('gndbhwq',nrow(site_analyzed))
+site_analyzed <- cbind(site_analyzed, Sitecode)
 
-diel <- format(as.POSIXct(bh_test_2$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
-bh_test_2 <-cbind(bh_test_2,diel)
+diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
+site_analyzed <-cbind(site_analyzed,diel)
 
-monthly<- format(as.POSIXct(bh_test_2$datetimestamp,format="%Y-%m-%d H:M"), "%Y-%m")
-bh_test_2<-cbind(bh_test_2,monthly)
+monthly<- format(as.POSIXct(site_analyzed$datetimestamp,format="%Y-%m-%d H:M"), "%Y-%m")
+site_analyzed<-cbind(site_analyzed,monthly)
 
-#Chnage to include year so that they are unique
-bh_test_2 <- bh_test_2 %>% 
+site_analyzed <- site_analyzed %>% 
   mutate(Month = month(datetimestamp)) %>% 
-  mutate(Season = ifelse(Month == 1 | Month == 2 | Month == 12, "Winter",ifelse(Month == 3 | Month == 4 | Month == 5, "Spring",ifelse(Month == 6 | Month == 7 | Month == 8, "Summer",ifelse(Month == 9 | Month == 10 | Month == 11, "Fall",NA)))))
+  mutate(Season = ifelse(Month == 1 | Month == 2, paste("Winter", year(datetimestamp), sep=" "),ifelse(Month == 12, paste("Winter", (year(datetimestamp)+1), sep=" "), ifelse(Month == 3 | Month == 4 | Month == 5, paste("Spring", year(datetimestamp), sep=" "),ifelse(Month == 6 | Month == 7 | Month == 8, paste("Summer", year(datetimestamp), sep=" "),ifelse(Month == 9 | Month == 10 | Month == 11, paste("Fall", year(datetimestamp), sep=" "),NA))))))
 
 #Testing my calculations for CV = STD/mean
-#If any NA's, will not calculate the CV
-bh_calculations_diel <- bh_test_2 %>% group_by(diel) %>% summarise(diel_STD = sd(do_mgl), diel_AVG = mean(do_mgl)) %>% mutate(diel_CV=(diel_STD/diel_AVG))
-bh_test_2 <- merge(bh_test_2, bh_calculations_diel, by="diel")
+bh_calculations_diel <- site_analyzed %>% group_by(diel) %>% summarise(diel_STD = sd(do_mgl), diel_AVG = mean(do_mgl)) %>% mutate(diel_CV=(diel_STD/diel_AVG))
+site_analyzed <- merge(site_analyzed, bh_calculations_diel, by="diel")
 
 
-bh_calculations_monthly <- bh_test_2 %>% group_by(monthly) %>% summarise(monthly_STD = sd(do_mgl, na.rm=TRUE), monthly_AVG = mean(do_mgl,na.rm=TRUE)) %>% mutate(monthly_CV=(monthly_STD/monthly_AVG))
-bh_test_2 <- merge(bh_test_2, bh_calculations_monthly, by="monthly")
+bh_calculations_monthly <- site_analyzed %>% group_by(monthly) %>% summarise(monthly_STD = sd(do_mgl, na.rm=TRUE), monthly_AVG = mean(do_mgl,na.rm=TRUE)) %>% mutate(monthly_CV=(monthly_STD/monthly_AVG))
+site_analyzed <- merge(site_analyzed, bh_calculations_monthly, by="monthly")
 
 
-bh_calculations_seasonal <- bh_test_2 %>% group_by(Season) %>% summarise(seasonal_STD = sd(do_mgl), seasonal_AVG = mean(do_mgl)) %>% mutate(seasonal_CV=(seasonal_STD/seasonal_AVG))
-bh_test_2 <- merge(bh_test_2, bh_calculations_monthly, by="Season")
-#Season is not unique, so will have issue merging. 
+bh_calculations_seasonal <- site_analyzed %>% group_by(Season) %>% summarise(seasonal_STD = sd(do_mgl, na.rm=TRUE), seasonal_AVG = mean(do_mgl, na.rm = TRUE)) %>% mutate(seasonal_CV=(seasonal_STD/seasonal_AVG))
+site_analyzed <- merge(site_analyzed, bh_calculations_seasonal, by="Season")
 
 
-#2007
-ggplot(bh_test_2, aes(x=datetimestamp, y=do_mgl)) +
-  geom_line() +
-  xlab("2007") +
-  ylab("DO (mg/L)")+
-  ylim(c(0,15)) +
-  ggtitle("gndbhwq MC DO over 2007") +
-  theme_bw()
+#gndbh missing values:
+#Monthly:
+error_percent_M <- 1:nlevels(site_analyzed$monthly)
 
+for(i in 1:nlevels(site_analyzed$monthly)){
+  
+  temp_month <-bh_calculations_monthly$monthly[i]
+  temp <- site_analyzed[site_analyzed$monthly==temp_month,]
+  
+  error_percent_M[i] <- round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2)
+  #print(paste(temp_month, round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2), sep=': '))
+}
+
+#Error Table: Monthly
+error_month <- data.frame(bh_calculations_monthly$monthly, error_percent_M)
+
+#Daily
+error_percent_D <- 1:nlevels(site_analyzed$diel)
+
+for(i in 1:nlevels(site_analyzed$diel)){
+  
+  temp_diel <-bh_calculations_diel$diel[i]
+  temp <- site_analyzed[site_analyzed$diel==temp_diel,]
+  
+  error_percent_D[i] <- round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2)
+  #print(paste(temp_diel, round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2), sep=': '))
+}
+
+#Error Table: Daily
+error_diel <- data.frame(bh_calculations_diel$diel, error_percent_D)
+
+#Seasonal
+error_percent_S <- 1:45
+
+for(i in 1:45){
+  
+  temp_season <-bh_calculations_seasonal$Season[i]
+  temp <- site_analyzed[site_analyzed$Season==temp_season,]
+  
+  error_percent_S[i] <- round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2)
+  print(paste(temp_season, round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2), sep=': '))
+}
+
+#Error Table: Seasonally
+error_season <- data.frame(bh_calculations_seasonal$Season, error_percent_S)
+
+
+
+#Removing any Values with error below 90%
+
+error_diel <- error_diel %>% mutate(error_cleaned = ifelse(error_diel$error_percent_D<90, NA, error_diel$error_percent_D))
+
+
+
+
+
+
+
+
+
+#Timeseries
 #2008
-bh_test_2<- bh_test[bh_test$datetimestamp>='2016-01-01 00:00' & bh_test$datetimestamp<='2016-12-31 23:45',]
-ggplot(bh_test_2, aes(x=datetimestamp, y=do_mgl)) +
+timeseries <- bh_test[bh_test$datetimestamp>='2016-01-01 00:00' & bh_test$datetimestamp<='2016-12-31 23:45',]
+ggplot(timeseries, aes(x=datetimestamp, y=do_mgl)) +
   geom_line() +
   xlab("2008") +
   ylab("DO (mg/L)")+
@@ -181,7 +232,42 @@ ggplot(bh_test_2, aes(x=datetimestamp, y=do_mgl)) +
 
 
 
+#Seasonal Plots (2007-2017 gndbh)
 
+#Spring, Summer, Fall
+setwd("C:/Users/sabla/Documents/Research/Plots")
+for(i in 1:45){
+  
+  temp_season <- bh_calculations_seasonal$Season[i]
+  temp <- site_analyzed[site_analyzed$Season==temp_season,]
+  
+  jpeg(paste(temp_season,'.jpg'))
+  
+  seasonPlot <- ggplot(temp, aes(x=datetimestamp, y=do_mgl)) +
+    geom_line() +
+    xlab("Year") +
+    ylab("DO (mg/L)")+
+    ylim(c(0,15)) +
+    ggtitle("") +
+    theme_bw()
+  
+  print(seasonPlot)
+  dev.off()
 
+}
 
+#Winter
+temp <- site_analyzed[site_analyzed$datetimestamp>='2007-01-01 00:00' & site_analyzed$datetimestamp<='2007-02-28 23:45',]
 
+jpeg(paste('Winter 2007','.jpg'))
+
+seasonPlot <- ggplot(temp, aes(x=datetimestamp, y=do_mgl)) +
+  geom_line() +
+  xlab("Year") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("") +
+  theme_bw()
+
+print(seasonPlot)
+dev.off()
