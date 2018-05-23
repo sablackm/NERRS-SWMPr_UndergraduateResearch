@@ -7,15 +7,25 @@
 #--------------------------------------
 
 rm(list = ls())
+# remove.packages(c("ggplot2", "plyr","dplyr", "reshape2", "lubridate", "SWMPr", "tidyverse"))
+# install.packages('ggplot2', dependencies = TRUE)
+# install.packages('plyr', dependencies = TRUE)
+# install.packages('dplyr', dependencies = TRUE)
+# install.packages('reshape2', dependencies = TRUE)
+# install.packages('lubridate', dependencies = TRUE)
+# install.packages('SWMPr', dependencies = TRUE)
+# install.packages('tidyverse', dependencies = TRUE)
 
-library("SWMPr")
+library("ggplot2")
+library("plyr")
 library("tidyverse")
 library("dplyr")
-library("ggplot2")
+library("SWMPr")
 library("reshape2")
 library("lubridate")
 library("gridExtra")
 library("data.table")
+
 
 #Importing Marshy Marsh Creek Data:
 
@@ -147,7 +157,7 @@ site_analyzed <- site_analyzed %>%
   mutate(Season = ifelse(Month == 1 | Month == 2, paste("Winter", year(datetimestamp), sep=" "),ifelse(Month == 12, paste("Winter", (year(datetimestamp)+1), sep=" "), ifelse(Month == 3 | Month == 4 | Month == 5, paste("Spring", year(datetimestamp), sep=" "),ifelse(Month == 6 | Month == 7 | Month == 8, paste("Summer", year(datetimestamp), sep=" "),ifelse(Month == 9 | Month == 10 | Month == 11, paste("Fall", year(datetimestamp), sep=" "),NA))))))
 
 #Testing my calculations for CV = STD/mean
-bh_calculations_diel <- site_analyzed %>% group_by(diel) %>% summarise(diel_STD = sd(do_mgl), diel_AVG = mean(do_mgl)) %>% mutate(diel_CV=(diel_STD/diel_AVG))
+bh_calculations_diel <- site_analyzed %>% group_by(diel) %>% summarise(diel_STD = sd(do_mgl, na.rm=TRUE), diel_AVG = mean(do_mgl, na.rm=TRUE)) %>% mutate(diel_CV=(diel_STD/diel_AVG))
 site_analyzed <- merge(site_analyzed, bh_calculations_diel, by="diel")
 
 
@@ -199,7 +209,7 @@ for(i in 1:45){
   temp <- site_analyzed[site_analyzed$Season==temp_season,]
   
   error_percent_S[i] <- round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2)
-  print(paste(temp_season, round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2), sep=': '))
+  #print(paste(temp_season, round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2), sep=': '))
 }
 
 #Error Table: Seasonally
@@ -209,7 +219,104 @@ error_season <- data.frame(bh_calculations_seasonal$Season, error_percent_S)
 
 #Removing any Values with error below 90%
 
+
+#Start with Daily:
 error_diel <- error_diel %>% mutate(error_cleaned = ifelse(error_diel$error_percent_D<90, NA, error_diel$error_percent_D))
+colnames(error_diel) <- c("diel","error_percent_D","error_cleaned_D")
+
+site_analyzed_clean<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
+
+
+Sitecode <- rep('gndbhwq',nrow(site_analyzed_clean))
+site_analyzed_clean <- cbind(site_analyzed_clean, Sitecode)
+
+diel <- format(as.POSIXct(site_analyzed_clean$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
+site_analyzed_clean <-cbind(site_analyzed_clean,diel)
+
+monthly<- format(as.POSIXct(site_analyzed_clean$datetimestamp,format="%Y-%m-%d H:M"), "%Y-%m")
+site_analyzed_clean<-cbind(site_analyzed_clean,monthly)
+
+site_analyzed <- arrange(site_analyzed, site_analyzed$datetimestamp)
+
+site_analyzed_clean <- site_analyzed_clean %>% 
+  mutate(Month = month(datetimestamp)) %>% 
+  mutate(Season = ifelse(Month == 1 | Month == 2, paste("Winter", year(datetimestamp), sep=" "),ifelse(Month == 12, paste("Winter", (year(datetimestamp)+1), sep=" "), ifelse(Month == 3 | Month == 4 | Month == 5, paste("Spring", year(datetimestamp), sep=" "),ifelse(Month == 6 | Month == 7 | Month == 8, paste("Summer", year(datetimestamp), sep=" "),ifelse(Month == 9 | Month == 10 | Month == 11, paste("Fall", year(datetimestamp), sep=" "),NA))))))
+
+site_analyzed_clean <-  cbind(site_analyzed_clean, do_mgl_D=rep(site_analyzed$do_mgl))
+
+site_analyzed_clean <- join(site_analyzed_clean,error_diel, type="left")
+for(i in 1:length(site_analyzed_clean$do_mgl)){
+  ifelse(is.na(site_analyzed_clean$error_cleaned_D[i]), site_analyzed_clean$do_mgl_D[i]<-NA, site_analyzed_clean$do_mgl[i])
+}
+
+bh_calculations_diel_2 <- site_analyzed_clean %>% group_by(diel) %>% summarise(diel_STD = sd(do_mgl_D, na.rm=TRUE), diel_AVG = mean(do_mgl_D, na.rm=TRUE)) %>% mutate(diel_CV=(diel_STD/diel_AVG))
+site_analyzed_clean <- merge(site_analyzed_clean, bh_calculations_diel_2, by="diel")
+
+
+#Monthly:
+error_percent_M <- 1:nlevels(site_analyzed_clean$monthly)
+
+for(i in 1:nlevels(site_analyzed_clean$monthly)){
+  
+  temp_month <- bh_calculations_monthly$monthly[i]
+  temp <- site_analyzed_clean[site_analyzed_clean$monthly==temp_month,]
+  
+  error_percent_M[i] <- round((1-(sum(is.na(temp$do_mgl_D)))/nrow(temp))*100,2)
+  #print(paste(temp_month, round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2), sep=': '))
+}
+
+#Error Table: Monthly
+error_month_2 <- data.frame(bh_calculations_monthly$monthly, error_percent_M)
+
+error_month_2 <- error_month_2 %>% mutate(error_cleaned = ifelse(error_month_2$error_percent_M<90, NA, error_month_2$error_percent_M))
+colnames(error_month_2) <- c("monthly","error_percent_M","error_cleaned_M")
+
+site_analyzed_clean <-  cbind(site_analyzed_clean, do_mgl_M=rep(site_analyzed_clean$do_mgl_D))
+
+site_analyzed_clean <- join(site_analyzed_clean,error_month_2, type="left")
+for(i in 1:length(site_analyzed_clean$do_mgl)){
+  ifelse(is.na(site_analyzed_clean$error_cleaned_M[i]), site_analyzed_clean$do_mgl_M[i]<-NA, site_analyzed_clean$do_mgl_D[i])
+}
+
+bh_calculations_monthly_2 <- site_analyzed_clean %>% group_by(monthly) %>% summarise(monthly_STD = sd(do_mgl_M, na.rm=TRUE), monthly_AVG = mean(do_mgl_M,na.rm=TRUE)) %>% mutate(monthly_CV=(monthly_STD/monthly_AVG))
+site_analyzed_clean <- merge(site_analyzed_clean, bh_calculations_monthly_2, by="monthly")
+
+
+#Seasonal:
+error_percent_S <- 1:45
+
+for(i in 1:45){
+  
+  temp_season <-bh_calculations_seasonal$Season[i]
+  temp <- site_analyzed_clean[site_analyzed_clean$Season==temp_season,]
+  
+  error_percent_S[i] <- round((1-(sum(is.na(temp$do_mgl_M)))/nrow(temp))*100,2)
+  #print(paste(temp_season, round((1-(sum(is.na(temp$do_mgl)))/nrow(temp))*100,2), sep=': '))
+}
+
+#Error Table: Seasonally
+error_season_2 <- data.frame(bh_calculations_seasonal$Season, error_percent_S)
+
+error_season_2 <- error_season_2 %>% mutate(error_cleaned = ifelse(error_season_2$error_percent_S<90, NA, error_season_2$error_percent_S))
+colnames(error_season_2) <- c("Season","error_percent_S","error_cleaned_S")
+
+site_analyzed_clean <-  cbind(site_analyzed_clean, do_mgl_S=rep(site_analyzed_clean$do_mgl_M))
+
+site_analyzed_clean <- join(site_analyzed_clean,error_season_2, type="left")
+for(i in 1:length(site_analyzed_clean$do_mgl)){
+  ifelse(is.na(site_analyzed_clean$error_cleaned_S[i]), site_analyzed_clean$do_mgl_S[i]<-NA, site_analyzed_clean$do_mgl_M[i])
+}
+
+bh_calculations_seasonal_2 <- site_analyzed_clean %>% group_by(Season) %>% summarise(seasonal_STD = sd(do_mgl_S, na.rm=TRUE), seasonal_AVG = mean(do_mgl_S,na.rm=TRUE)) %>% mutate(seasonal_CV=(seasonal_STD/seasonal_AVG))
+site_analyzed_clean <- merge(site_analyzed_clean, bh_calculations_seasonal_2, by="Season")
+
+
+
+
+
+
+
+
 
 
 
@@ -271,3 +378,43 @@ seasonPlot <- ggplot(temp, aes(x=datetimestamp, y=do_mgl)) +
 
 print(seasonPlot)
 dev.off()
+
+
+#Coefficient of Variation Plots: Diel
+
+subdat1<- site_analyzed_clean[site_analyzed_clean$datetimestamp>='2007-01-01 00:00' & site_analyzed_clean$datetimestamp<='2017-12-31 23:45',]
+g_gnd_cv_D <- ggplot(subdat1, aes(x=subdat1$datetimestamp, y=subdat1$diel_CV)) + 
+  geom_point() +
+  xlab("Time") +
+  ylab("CV")+
+  ggtitle("'Marshy' gndBH CV Diel 2007-2017") +
+  theme_bw()
+plot(g_gnd_cv_D)
+
+g_gnd_cv_M <- ggplot(subdat1$monthly_CV, aes(subdat1$monthly)) + 
+  geom_bar() +
+  xlab("Time") +
+  ylab("CV")+
+  ggtitle("'Marshy' gndBH CV Monthly 2007-2017") +
+  theme_bw()
+plot(g_gnd_cv_M)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
