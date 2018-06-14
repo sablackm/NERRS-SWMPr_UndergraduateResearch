@@ -29,22 +29,22 @@ library("data.table")
 
 #Importing Marshy Marsh Creek Data:
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\SecondDownload_old\\GulfofMexico"
+path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\GulfofMexico"
 sitename = 'gndbhwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 bh <- qaqc(data_collected)
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\SecondDownload_old\\Southeast"
+path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
 sitename = 'sapdcwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 dc <- qaqc(data_collected)
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\SecondDownload_old\\Southeast"
+path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
 sitename = 'sapldwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 ld <- qaqc(data_collected)
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\SecondDownload_old\\Southeast"
+path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
 sitename = 'niwtawq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 ta <- qaqc(data_collected)
@@ -56,12 +56,12 @@ bh_test$datetimestamp <- force_tz(bh_test$datetimestamp, tzone ="EST")
 #sub_dat_test2<- bh[bh$datetimestamp>='2007-01-01 00:00' & bh$datetimestamp<='2016-12-31 23:45',]
 
 #CDF Plots
-sub_dat1<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2016-12-31 23:45',]
+sub_dat1<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
 g_gnd <- ggplot(sub_dat1, aes(x=sub_dat1$do_mgl)) + 
   stat_ecdf() +
   xlab("DO (mg/L)") +
   ylab("%")+
-  ggtitle("'Marshy' gndBH CDF 2007-2016") +
+  ggtitle("'Marshy' gndBH CDF 2007-2017") +
   theme_bw()
 head(sub_dat1)
 sub_dat2<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2016-12-31 23:45',]
@@ -391,18 +391,35 @@ g_gnd_cv_D <- ggplot(subdat1, aes(x=subdat1$datetimestamp, y=subdat1$diel_CV)) +
   theme_bw()
 plot(g_gnd_cv_D)
 
-g_gnd_cv_M <- ggplot(subdat1$monthly_CV, aes(subdat1$monthly)) + 
-  geom_bar() +
+
+subdat1<- site_analyzed_clean[site_analyzed_clean$datetimestamp>='2007-01-01 00:00' & site_analyzed_clean$datetimestamp<='2017-12-31 23:45',]
+g_gnd_cv_M <- ggplot(subdat1, aes(x=monthly, y=monthly_CV)) + 
+  geom_point() +
   xlab("Time") +
   ylab("CV")+
   ggtitle("'Marshy' gndBH CV Monthly 2007-2017") +
   theme_bw()
 plot(g_gnd_cv_M)
 
+subdat1<- site_analyzed_clean[site_analyzed_clean$datetimestamp>='2007-01-01 00:00' & site_analyzed_clean$datetimestamp<='2017-12-31 23:45',]
+g_gnd_cv_M <- ggplot(subdat1, aes(x=Season, y=seasonal_CV)) + 
+  geom_point() +
+  xlab("Time") +
+  ylab("CV")+
+  ggtitle("'Marshy' gndBH CV Seasonal 2007-2017") +
+  theme_bw()
+plot(g_gnd_cv_M)
 
-
-
-
+subdat1<- site_analyzed_clean[site_analyzed_clean$datetimestamp>='2007-01-01 00:00' & site_analyzed_clean$datetimestamp<='2017-12-31 23:45',]
+g_gnd_cv_monthly <- ggplot(subdat1, aes(x=Month, y=monthly_CV, group=Month)) +
+  geom_boxplot() +
+  geom_jitter(position = position_jitter(w=.001,h=.001)) +
+  #xlab("Month") +
+  ylab("CV for each Month")+
+  scale_x_discrete(name="Month", limits=c(1,2,3,4,5,6,7,8,9,10,11,12)) +
+  ggtitle("gndbhwq Monthly DO CV", subtitle = "2007-2017") +
+  theme_bw()
+plot(g_gnd_cv_monthly)
 
 
 
