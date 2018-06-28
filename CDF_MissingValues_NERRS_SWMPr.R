@@ -45,50 +45,87 @@ data_collected <- import_local(path, sitename, trace = FALSE)
 ld <- qaqc(data_collected)
 
 path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
-sitename = 'niwtawq'
+sitename = 'gtmpcwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
-ta <- qaqc(data_collected)
+pc <- qaqc(data_collected)
+
+path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+sitename = 'gndbcwq'
+data_collected <- import_local(path, sitename, trace = FALSE)
+bc <- qaqc(data_collected)
+
+path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+sitename = 'gndblwq'
+data_collected <- import_local(path, sitename, trace = FALSE)
+bl <- qaqc(data_collected)
+
 
 bh_test <-bh
+bc_test <-bc
+bl_test <-bl
 #Change Grand Bay into EST
 bh_test$datetimestamp <- force_tz(bh_test$datetimestamp, tzone ="EST")
+bc_test$datetimestamp <- force_tz(bc_test$datetimestamp, tzone ="EST")
+bl_test$datetimestamp <- force_tz(bl_test$datetimestamp, tzone ="EST")
 #sub_dat_test<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2016-12-31 23:45',]
 #sub_dat_test2<- bh[bh$datetimestamp>='2007-01-01 00:00' & bh$datetimestamp<='2016-12-31 23:45',]
 
 #CDF Plots
 sub_dat1<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
-g_gnd <- ggplot(sub_dat1, aes(x=sub_dat1$do_mgl)) + 
+g_gndbh <- ggplot(sub_dat1, aes(x=sub_dat1$do_mgl)) + 
   stat_ecdf() +
   xlab("DO (mg/L)") +
   ylab("%")+
   ggtitle("'Marshy' gndBH CDF 2007-2017") +
   theme_bw()
-head(sub_dat1)
-sub_dat2<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2016-12-31 23:45',]
+
+sub_dat6<- bc_test[bc_test$datetimestamp>='2007-01-01 00:00' & bc_test$datetimestamp<='2017-12-31 23:45',]
+g_gndbc <- ggplot(sub_dat6, aes(x=sub_dat6$do_mgl)) + 
+  stat_ecdf() +
+  xlab("DO (mg/L)") +
+  ylab("%")+
+  ggtitle("Marsh Creek gndBC CDF 2007-2017") +
+  theme_bw()
+
+sub_dat5<- bl_test[bl_test$datetimestamp>='2007-01-01 00:00' & bl_test$datetimestamp<='2017-12-31 23:45',]
+g_gndbl <- ggplot(sub_dat5, aes(x=sub_dat5$do_mgl)) + 
+  stat_ecdf() +
+  xlab("DO (mg/L)") +
+  ylab("%")+
+  ggtitle("Open Water gndBL CDF 2007-2017") +
+  theme_bw()
+
+grid.arrange(g_gndbh,g_gndbc,g_gndbl, nrow=2, ncol=2)
+
+
+
+
+
+sub_dat2<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
 g_sap <- ggplot(sub_dat2, aes(x=sub_dat2$do_mgl)) + 
   stat_ecdf()+
   xlab("DO (mg/L)") +
   ylab("%")+
-  ggtitle("'Marshy' sapDC CDF 2007-2016") +
+  ggtitle("'Marshy' sapDC CDF 2007-2017") +
   theme_bw()
 
-sub_dat3<- ld[ld$datetimestamp>='2007-01-01 00:00' & ld$datetimestamp<='2016-12-31 23:45',]
+sub_dat3<- ld[ld$datetimestamp>='2007-01-01 00:00' & ld$datetimestamp<='2017-12-31 23:45',]
 g_sap_control <-ggplot(sub_dat3, aes(x=sub_dat3$do_mgl)) + 
   stat_ecdf() +
   xlab("DO (mg/L)") +
   ylab("%")+
-  ggtitle("Openwater CDF 2007-2016") +
+  ggtitle("Openwater CDF 2007-2017") +
   theme_bw()
 
-sub_dat4<- ta[ta$datetimestamp>='2007-01-01 00:00' & ta$datetimestamp<='2016-12-31 23:45',]
-g_niw_control <-ggplot(sub_dat4, aes(x=sub_dat4$do_mgl)) + 
+sub_dat4<- pc[pc$datetimestamp>='2007-01-01 00:00' & pc$datetimestamp<='2017-12-31 23:45',]
+g_pc_control <-ggplot(sub_dat4, aes(x=sub_dat4$do_mgl)) + 
   stat_ecdf() +
   xlab("DO (mg/L)") +
   ylab("%")+
-  ggtitle("Marsh Creek CDF 2007-2016") +
+  ggtitle("Marsh Creek CDF 2007-2017") +
   theme_bw()
 
-grid.arrange(g_gnd,g_sap,g_sap_control,g_niw_control, nrow=2, ncol=2)
+grid.arrange(g_sap,g_sap_control,g_pc_control, nrow=2, ncol=2)
 #-------------------------------------------------------------------------------------------------
 # Percentage of Missing Values:
 #-------------------------------------------------------------------------------------------------
@@ -119,18 +156,18 @@ missing_ld_ph
 
 #For Marsh Creek Comparison
 #DO
-missing_ta_do <- round(sum(is.na(sub_dat4$do_mgl))/nrow(sub_dat4)*100,2)
-missing_ta_do
+missing_pc_do <- round(sum(is.na(sub_dat4$do_mgl))/nrow(sub_dat4)*100,2)
+missing_pc_do
 #pH
-missing_ta_ph <- round(sum(is.na(sub_dat4$ph))/nrow(sub_dat4)*100,2)
+missing_pc_ph <- round(sum(is.na(sub_dat4$ph))/nrow(sub_dat4)*100,2)
 
-site<-c("gnd_bh", "sap_dc", "Openwater", "Marsh Creek")
-missing_DO<-c(missing_bh_do,missing_dc_do,missing_ld_do,missing_ta_do)
-missing_ph<-c(missing_bh_ph,missing_dc_ph,missing_ld_ph,missing_ta_ph)
-
-df_missing <-data.frame(Sites=site, do_miss=missing_DO, ph_miss=missing_ph)
-colnames(df_missing) <- c("Site","|% DO Values Missing","|% pH Values Missing")
-df_missing
+# site<-c("gnd_bh", "sap_dc", "Openwater", "Marsh Creek")
+# missing_DO<-c(missing_bh_do,missing_dc_do,missing_ld_do,missing_ta_do)
+# missing_ph<-c(missing_bh_ph,missing_dc_ph,missing_ld_ph,missing_ta_ph)
+# 
+# df_missing <-data.frame(Sites=site, do_miss=missing_DO, ph_miss=missing_ph)
+# colnames(df_missing) <- c("Site","|% DO Values Missing","|% pH Values Missing")
+# df_missing
 
 
 
@@ -140,10 +177,8 @@ df_missing
 #-----------------------------------------------------------------------------------------------------------------------
 
 
-site_analyzed<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
-
-
-Sitecode <- rep('gndbhwq',nrow(site_analyzed))
+site_analyzed<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
+Sitecode <- rep('sapdcwq',nrow(site_analyzed))
 site_analyzed <- cbind(site_analyzed, Sitecode)
 
 diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
@@ -224,7 +259,7 @@ error_season <- data.frame(bh_calculations_seasonal$Season, error_percent_S)
 error_diel <- error_diel %>% mutate(error_cleaned = ifelse(error_diel$error_percent_D<90, NA, error_diel$error_percent_D))
 colnames(error_diel) <- c("diel","error_percent_D","error_cleaned_D")
 
-site_analyzed_clean<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
+site_analyzed_clean<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
 
 
 Sitecode <- rep('gndbhwq',nrow(site_analyzed_clean))
