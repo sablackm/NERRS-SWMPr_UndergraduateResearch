@@ -177,7 +177,7 @@ missing_pc_ph <- round(sum(is.na(sub_dat4$ph))/nrow(sub_dat4)*100,2)
 #-----------------------------------------------------------------------------------------------------------------------
 
 
-site_analyzed<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
+site_analyzed<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
 Sitecode <- rep('sapdcwq',nrow(site_analyzed))
 site_analyzed <- cbind(site_analyzed, Sitecode)
 
@@ -259,7 +259,7 @@ error_season <- data.frame(bh_calculations_seasonal$Season, error_percent_S)
 error_diel <- error_diel %>% mutate(error_cleaned = ifelse(error_diel$error_percent_D<90, NA, error_diel$error_percent_D))
 colnames(error_diel) <- c("diel","error_percent_D","error_cleaned_D")
 
-site_analyzed_clean<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
+site_analyzed_clean<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
 
 
 Sitecode <- rep('gndbhwq',nrow(site_analyzed_clean))
@@ -347,6 +347,15 @@ site_analyzed_clean <- merge(site_analyzed_clean, bh_calculations_seasonal_2, by
 
 
 
+
+
+
+
+
+
+
+fit <- lm(site_analyzed_clean$do_mgl_D ~ site_analyzed_clean$turb + site_analyzed_clean$ph, data=site_analyzed_clean)
+summary(fit)
 
 
 
