@@ -22,15 +22,16 @@ library("ggplot2")
 library("reshape2")
 library("lubridate")
 
-setwd("C:/Users/sabla/Documents/plots")
-#setwd("/Users/samuelblackman/Desktop/Research")
+#setwd("C:/Users/sabla/Documents/plots")
+setwd("/Users/samuelblackman/Desktop/Research/NERRS")
 #SOUTHEAST DATA
-#path <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/SouthEast"
+#path <- "C:/Users/sabla/Documents/Research/NERRS/Southeast"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/Southeast"
 
 #GULF DATA
-#path2 <- "C:/Users/sabla/Documents/Research/SecondDownload_Current/GulfOfMexico"
-path2 <- "/Users/samuelblackman/Desktop/Research/GulfOfMexico"
-path <- "/Users/samuelblackman/Desktop/Research/SouthEast"
+#path2 <- "C:/Users/sabla/Documents/Research/NERRS/GulfOfMexico"
+#path2 <- "/Users/samuelblackman/Desktop/Research/GulfOfMexico"
+path2 <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
 
 sitename = 'acefcwq'
 sitenames <- c('acemcwq', 'acespwq','gtmpcwq','niwcbwq','niwdcwq', 'niwolwq', 'niwtawq','nocrcwq','sapdcwq','acejiwq','gtmpiwq','gtmfmwq','gtmsswq','noclcwq','noczbwq','nocecwq','sapcawq','saphdwq','sapldwq')

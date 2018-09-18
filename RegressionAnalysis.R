@@ -63,8 +63,8 @@ site_analyzed <- site_analyzed %>%
 
 #Choosing Month/Season
 #calculcating Missing Values Percentages
-timeseries <- site_analyzed[site_analyzed$datetimestamp>='2010-01-01 00:00' & site_analyzed$datetimestamp<='2010-12-31 23:45',]
-timeseries <- subset(timeseries, Season=='Fall 2010')
+timeseries <- site_analyzed[site_analyzed$datetimestamp>='2009-01-01 00:00' & site_analyzed$datetimestamp<='2009-12-31 23:45',]
+timeseries <- subset(timeseries, Season=='Summer 2009')
 missing_for_year_DO <- round(sum(is.na(timeseries$do_pct))/nrow(timeseries)*100,2)
 missing_for_year_DO
 missing_for_year_turb <- round(sum(is.na(timeseries$turb))/nrow(timeseries)*100,2)
@@ -106,10 +106,10 @@ vif(fit)
 predicted_df <- data.frame(datetimestamp=timeseries$datetimestamp, do_pred = predict(fit, timeseries))
 p2 <- ggplot(timeseries, aes(x=datetimestamp, y=do_pct)) +
   geom_line() + geom_line(color='red',data=predicted_df,aes(datetimestamp,do_pred)) +
-  xlab("2010") +
+  xlab("2009") +
   ylab("DO %")+
   ylim(c(0,100)) +
-  ggtitle("gndbhwq MC DO over 2010") +
+  ggtitle("gndbhwq MC DO over 2009") +
   theme_bw()
 p2
 #grid.arrange(p1,p2,nrow=2, ncol=1)

@@ -73,7 +73,7 @@ analyze_tide_2 <- analyze_tide %>%
   mutate(Tide = ifelse(TY == "L " | TY == "LL", "E", "F")) %>%
   mutate(Tide_2 = ifelse(TY == "L " | TY == "LL", "E", "F"))
     
-#End Case GNDBH:
+#End Case GNDBH: THIS WILL HAVE TO CHANGE BASED ON THE NEW DATA SET LENGTH (MORE 2018 DATA)
 analyze_tide_2$ID[385721]<- 8289
 analyze_tide_2$ID[385722]<- 8289
 analyze_tide_2$ID[385723]<- 8289

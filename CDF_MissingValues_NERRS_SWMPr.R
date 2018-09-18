@@ -8,13 +8,13 @@
 
 rm(list = ls())
 # remove.packages(c("ggplot2", "plyr","dplyr", "reshape2", "lubridate", "SWMPr", "tidyverse"))
-# install.packages('ggplot2', dependencies = TRUE)
-# install.packages('plyr', dependencies = TRUE)
-# install.packages('dplyr', dependencies = TRUE)
-# install.packages('reshape2', dependencies = TRUE)
-# install.packages('lubridate', dependencies = TRUE)
-# install.packages('SWMPr', dependencies = TRUE)
-# install.packages('tidyverse', dependencies = TRUE)
+ # install.packages('ggplot2', dependencies = TRUE)
+ # install.packages('plyr', dependencies = TRUE)
+ # install.packages('dplyr', dependencies = TRUE)
+ # install.packages('reshape2', dependencies = TRUE)
+ # install.packages('lubridate', dependencies = TRUE)
+ # install.packages('SWMPr', dependencies = TRUE)
+ # install.packages('tidyverse', dependencies = TRUE)
 
 library("ggplot2")
 library("plyr")
@@ -29,32 +29,38 @@ library("data.table")
 
 #Importing Marshy Marsh Creek Data:
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\GulfofMexico"
+#path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\GulfofMexico"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
 sitename = 'gndbhwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 bh <- qaqc(data_collected)
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+#path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/Southeast"
 sitename = 'sapdcwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 dc <- qaqc(data_collected)
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+#path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/Southeast"
 sitename = 'sapldwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 ld <- qaqc(data_collected)
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+#path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/Southeast"
 sitename = 'gtmpcwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 pc <- qaqc(data_collected)
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+#path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\GulfofMexico"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
 sitename = 'gndbcwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 bc <- qaqc(data_collected)
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\SouthAtlantic"
+#path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\GulfofMexico"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
 sitename = 'gndblwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 bl <- qaqc(data_collected)
@@ -177,8 +183,8 @@ missing_pc_ph <- round(sum(is.na(sub_dat4$ph))/nrow(sub_dat4)*100,2)
 #-----------------------------------------------------------------------------------------------------------------------
 
 
-site_analyzed<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
-Sitecode <- rep('sapdcwq',nrow(site_analyzed))
+site_analyzed<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
+Sitecode <- rep('gndbhwq',nrow(site_analyzed))
 site_analyzed <- cbind(site_analyzed, Sitecode)
 
 diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
@@ -259,7 +265,7 @@ error_season <- data.frame(bh_calculations_seasonal$Season, error_percent_S)
 error_diel <- error_diel %>% mutate(error_cleaned = ifelse(error_diel$error_percent_D<90, NA, error_diel$error_percent_D))
 colnames(error_diel) <- c("diel","error_percent_D","error_cleaned_D")
 
-site_analyzed_clean<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
+site_analyzed_clean<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
 
 
 Sitecode <- rep('gndbhwq',nrow(site_analyzed_clean))
@@ -351,8 +357,9 @@ site_analyzed_clean <- merge(site_analyzed_clean, bh_calculations_seasonal_2, by
 
 
 
-
-
+timeseries <- site_analyzed_clean[site_analyzed_clean$datetimestamp>='2016-08-01 00:00' & site_analyzed_clean$datetimestamp<='2016-08-31 23:45',]
+fit <- lm(timeseries$do_mgl_D ~ timeseries$turb + timeseries$ph +timeseries$depth, data=timeseries)
+summary(fit)
 
 
 
@@ -363,15 +370,25 @@ site_analyzed_clean <- merge(site_analyzed_clean, bh_calculations_seasonal_2, by
 
 #Timeseries
 #2008
-timeseries <- bh_test[bh_test$datetimestamp>='2016-01-01 00:00' & bh_test$datetimestamp<='2016-12-31 23:45',]
-ggplot(timeseries, aes(x=datetimestamp, y=do_mgl)) +
+timeseries_OG <- bh_test[bh_test$datetimestamp>='2016-01-01 00:00' & bh_test$datetimestamp<='2016-01-31 23:45',]
+p1 <- ggplot(timeseries_OG, aes(x=datetimestamp, y=do_mgl)) +
   geom_line() +
-  xlab("2008") +
+  xlab("2016") +
   ylab("DO (mg/L)")+
   ylim(c(0,15)) +
-  ggtitle("gndbhwq MC DO over 2008") +
+  ggtitle("gndbhwq OG MC DO over 2016") +
   theme_bw()
 
+predicted_df <- data.frame(datetimestamp=timeseries$datetimestamp, do_pred = predict(fit, timeseries))
+p2 <- ggplot(timeseries, aes(x=datetimestamp, y=do_mgl)) +
+  geom_line() + geom_line(color='red',data=predicted_df,aes(datetimestamp,do_pred)) +
+  xlab("2016") +
+  ylab("DO (mg/L)")+
+  ylim(c(0,15)) +
+  ggtitle("gndbhwq MC DO over 2016") +
+  theme_bw()
+
+grid.arrange(p1,p2,nrow=2, ncol=1)
 
 
 #Seasonal Plots (2007-2017 gndbh)
