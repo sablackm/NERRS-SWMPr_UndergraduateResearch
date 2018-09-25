@@ -24,7 +24,7 @@ library("data.table")
 
 #Importing Marshy Marsh Creek Data:
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\Fourth_download_current\\GulfofMexico"
+path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
 #path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
 sitename = 'gndbhwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
@@ -56,9 +56,9 @@ site_analyzed <- site_analyzed %>%
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\Fourth_download_current\\SouthAtlantic"
+path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\SouthAtlantic"
 #path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
-sitename = 'sapdcwq'
+sitename = 'gtmpcwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 dc <- qaqc(data_collected)
 
@@ -87,7 +87,7 @@ site_analyzed <- site_analyzed %>%
 
 
 
-
+getSeason <- "Winter"
 
 
 for(i in 2007:2017){
@@ -95,7 +95,7 @@ for(i in 2007:2017){
 #calculcating Missing Values Percentages
 timeseries <- site_analyzed[site_analyzed$datetimestamp>='2007-01-01 00:00' & site_analyzed$datetimestamp<='2017-12-31 23:45',]
 #timeseries <- subset(timeseries, Month==i)
-timeseries <- subset(timeseries, Season==paste('Fall', i))
+timeseries <- subset(timeseries, Season==paste(getSeason, i))
 missing_for_year_DO <- round(sum(is.na(timeseries$do_pct))/nrow(timeseries)*100,2)
 missing_for_year_DO
 missing_for_year_turb <- round(sum(is.na(timeseries$turb))/nrow(timeseries)*100,2)
@@ -116,7 +116,7 @@ if(!is.na(missing_for_year_DO)){
 #Fitting the Data
 fit <- lm(timeseries$do_pct ~  timeseries$temp + timeseries$depth + timeseries$turb + timeseries$sal, data=timeseries)
 
-sink(paste(i," Radj_Fall.txt"))
+sink(paste(i,paste(getSeason, " Radj.txt")))
 #sink('Summer Radj_2012.txt')
 print(summary(fit))
 print(vif(fit))
@@ -143,14 +143,14 @@ sink()
 setwd("C:\\Users\\sabla\\Documents\\Research\\Plots\\Regression")
 predicted_df <- data.frame(datetimestamp=timeseries$datetimestamp, do_pred = predict(fit, timeseries))
 
-jpeg(paste(i, " Fall.jpeg"))
+jpeg(paste(i,paste(getSeason, ".jpeg")))
 #jpeg('Summer 2012.jpeg')
 p2 <- ggplot(timeseries, aes(x=datetimestamp, y=do_pct)) +
   geom_line() + geom_line(color='red',data=predicted_df,aes(datetimestamp,do_pred)) +
   xlab(i) +
   ylab("DO %")+
-  ylim(c(0,100)) +
-  ggtitle(paste("sapdcwq MC DO over ",i)) +
+  #ylim(c(0,100)) +
+  ggtitle(paste(paste(sitename," MC DO over "),i)) +
   theme_bw()
 print(p2)
 dev.off()
