@@ -184,7 +184,11 @@ missing_pc_ph <- round(sum(is.na(sub_dat4$ph))/nrow(sub_dat4)*100,2)
 
 
 site_analyzed<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
+<<<<<<< HEAD
 Sitecode <- rep('gndbhwq',nrow(site_analyzed))
+=======
+Sitecode <- rep('sapdcwq',nrow(site_analyzed))
+>>>>>>> dc8a61eea0b9b20c0dd66cd6df4b6427d85a9427
 site_analyzed <- cbind(site_analyzed, Sitecode)
 
 diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
@@ -360,6 +364,15 @@ site_analyzed_clean <- merge(site_analyzed_clean, bh_calculations_seasonal_2, by
 timeseries <- site_analyzed_clean[site_analyzed_clean$datetimestamp>='2016-08-01 00:00' & site_analyzed_clean$datetimestamp<='2016-08-31 23:45',]
 fit <- lm(timeseries$do_mgl_D ~ timeseries$turb + timeseries$ph +timeseries$depth, data=timeseries)
 summary(fit)
+
+fit <- lm(site_analyzed_clean$do_mgl_D ~ site_analyzed_clean$turb + site_analyzed_clean$ph, data=site_analyzed_clean)
+summary(fit)
+
+
+
+
+
+
 
 
 
