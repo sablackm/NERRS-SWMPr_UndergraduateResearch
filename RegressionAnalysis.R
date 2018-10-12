@@ -24,8 +24,8 @@ library("data.table")
 
 #Importing Marshy Marsh Creek Data:
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
-#path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
+#path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
 sitename = 'gndbhwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 bh <- qaqc(data_collected)
@@ -56,9 +56,9 @@ site_analyzed <- site_analyzed %>%
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\SouthAtlantic"
-#path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
-sitename = 'gtmpcwq'
+#path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\SouthAtlantic"
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
+sitename = 'apaebwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 dc <- qaqc(data_collected)
 
@@ -87,15 +87,16 @@ site_analyzed <- site_analyzed %>%
 
 
 
-getSeason <- "Winter"
+getSeason <- "Fall"
+#getMonth <- "2007-01"
 
 
-for(i in 2007:2017){
+for(i in 1:12){
   #Choosing Month/Season
   #calculcating Missing Values Percentages
-  timeseries <- site_analyzed[site_analyzed$datetimestamp>='2007-01-01 00:00' & site_analyzed$datetimestamp<='2017-12-31 23:45',]
-  #timeseries <- subset(timeseries, Month==i)
-  timeseries <- subset(timeseries, Season==paste(getSeason, i))
+  timeseries <- site_analyzed[site_analyzed$datetimestamp>='2009-01-01 00:00' & site_analyzed$datetimestamp<='2009-12-31 23:45',]
+  timeseries <- subset(timeseries, Month==i)
+  #timeseries <- subset(timeseries, Season==paste(getSeason, i))
   missing_for_year_DO <- round(sum(is.na(timeseries$do_pct))/nrow(timeseries)*100,2)
   missing_for_year_DO
   missing_for_year_turb <- round(sum(is.na(timeseries$turb))/nrow(timeseries)*100,2)
@@ -110,13 +111,14 @@ for(i in 2007:2017){
   
   
   
-  setwd("C:\\Users\\sabla\\Documents\\Research\\Plots\\Regression\\Summaries")
+  #setwd("C:\\Users\\sabla\\Documents\\Research\\Plots\\Regression\\Summaries")
+  setwd("/Users/samuelblackman/Desktop/Research/NERRS/Plots/Summaries")
   
   if(!is.na(missing_for_year_DO)){
     #Fitting the Data
     fit <- lm(timeseries$do_pct ~  timeseries$temp + timeseries$depth + timeseries$turb + timeseries$sal, data=timeseries)
     
-    sink(paste(i,paste(getSeason, " Radj.txt")))
+    sink(paste(i,paste(i, "2009 Radj.txt")))
     #sink('Summer Radj_2012.txt')
     print(summary(fit))
     print(vif(fit))
@@ -130,17 +132,19 @@ for(i in 2007:2017){
     
     #Timeseries
     #2017
-    # yr <- site_analyzed[site_analyzed$datetimestamp>='2017-01-01 00:00' & site_analyzed$datetimestamp<='2017-12-31 23:45',]
-    # timeseries_OG <- subset(yr, Season=='Summer 2017') #yr
-    # p1 <- ggplot(timeseries_OG, aes(x=datetimestamp, y=do_pct)) +
-    #   geom_line() +
-    #   xlab("2017") +
-    #   ylab("DO %")+
-    #   ylim(c(0,100)) +
-    #   ggtitle("gndbhwq OG MC DO over 2017") +
-    #   theme_bw()
+     # yr <- site_analyzed[site_analyzed$datetimestamp>='2007-01-01 00:00' & site_analyzed$datetimestamp<='2017-12-31 23:45',]
+     # #timeseries_OG <- subset(yr, Season=='Summer 2017') #yr
+     # p1 <- ggplot(yr, aes(x=datetimestamp, y=do_pct)) +
+     #   geom_line() +
+     #   xlab("2017") +
+     #   ylab("DO %") +
+     #   ylim(c(0,200)) +
+     #   ggtitle("wkbmrwq OG MC DO over 2017") +
+     #   theme_bw()
+     # p1
     
-    setwd("C:\\Users\\sabla\\Documents\\Research\\Plots\\Regression")
+    #setwd("C:\\Users\\sabla\\Documents\\Research\\Plots\\Regression")
+    setwd("/Users/samuelblackman/Desktop/Research/NERRS/Plots/GND_BC")
     predicted_df <- data.frame(datetimestamp=timeseries$datetimestamp, do_pred = predict(fit, timeseries))
     
     jpeg(paste(i,paste(getSeason, ".jpeg")))
@@ -148,7 +152,7 @@ for(i in 2007:2017){
     p2 <- ggplot(timeseries, aes(x=datetimestamp, y=do_pct)) +
       geom_line() + geom_line(color='red',data=predicted_df,aes(datetimestamp,do_pred)) +
       xlab(i) +
-      ylab("DO %")+
+      ylab("DO %") +
       #ylim(c(0,100)) +
       ggtitle(paste(paste(sitename," MC DO over "),i)) +
       theme_bw()
