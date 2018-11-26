@@ -1,16 +1,16 @@
 #Multilinear Regression Analysis of GND Sight (No Previous data manipulation besides QAQC)
 
 rm(list = ls())
-# remove.packages(c("ggplot2", "plyr","dplyr", "reshape2", "lubridate", "SWMPr", "tidyverse"))
-# install.packages('ggplot2', dependencies = TRUE)
-# install.packages('plyr', dependencies = TRUE)
-# install.packages('dplyr', dependencies = TRUE)
-# install.packages('reshape2', dependencies = TRUE)
-# install.packages('lubridate', dependencies = TRUE)
-# install.packages('SWMPr', dependencies = TRUE)
-# install.packages('tidyverse', dependencies = TRUE)
+remove.packages(c("ggplot2", "plyr","dplyr", "reshape2", "lubridate", "SWMPr", "tidyverse"))
+install.packages('ggplot2', dependencies = TRUE)
+install.packages('plyr', dependencies = TRUE)
+install.packages('dplyr', dependencies = TRUE)
+install.packages('reshape2', dependencies = TRUE)
+install.packages('lubridate', dependencies = TRUE)
+install.packages('SWMPr', dependencies = TRUE)
+install.packages('tidyverse', dependencies = TRUE)
+install.packages("car")
 
-#install.packages("car")
 library('car')
 library("ggplot2")
 library("plyr")
@@ -57,14 +57,14 @@ site_analyzed <- site_analyzed %>%
 
 
 #path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\SouthAtlantic"
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
-sitename = 'apaebwq'
+path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthAtlantic"
+sitename = 'gtmfmwq'
 data_collected <- import_local(path, sitename, trace = FALSE)
 dc <- qaqc(data_collected)
 
 
 site_analyzed<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
-Sitecode <- rep('sapdcwq',nrow(site_analyzed))
+Sitecode <- rep('gtmfmwq',nrow(site_analyzed))
 site_analyzed <- cbind(site_analyzed, Sitecode)
 
 diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
@@ -84,6 +84,41 @@ site_analyzed <- site_analyzed %>%
 
 
 
+
+
+
+#Tester
+timeseries <- site_analyzed[site_analyzed$datetimestamp>='2010-01-01 00:00' & site_analyzed$datetimestamp<='2010-12-31 23:45',]
+timeseries <- subset(timeseries, Month==12)
+timeseries <- timeseries[,c(-3,-8,-9,-10,-13)]
+
+
+timeseries<- na.omit(timeseries)
+
+fit <- lm(timeseries$do_pct ~  timeseries$temp + timeseries$depth + timeseries$turb + timeseries$sal, data=timeseries)
+summary(fit)
+vif(fit)
+
+predicted_df <- data.frame(datetimestamp=timeseries$datetimestamp, do_pred = predict(fit, timeseries))
+p2 <- ggplot(timeseries, aes(x=datetimestamp, y=do_pct)) +
+  geom_line() + geom_line(color='red',data=predicted_df,aes(datetimestamp,do_pred)) +
+  xlab("Month") +
+  ylab("DO %") +
+  theme_bw()
+print(p2)
+
+p2 <- ggplot(timeseries, aes(x=datetimestamp, y=turb)) +
+  geom_line() + geom_line(color='red',data=predicted_df,aes(datetimestamp,do_pred)) +
+  xlab("Month") +
+  ylab("DO %") +
+  theme_bw()
+print(p2)
+
+
+df1 <- c(1,2,2,2)
+df2 <- c(1,1,1,1)
+
+length(unique(df2))
 
 
 
