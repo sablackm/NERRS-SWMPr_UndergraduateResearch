@@ -1,6 +1,10 @@
 rm(list=ls(all=TRUE))
 library(ggplot2)
 library(gridExtra)
+library(SWMPr)
+library(tidyverse)
+install.packages("naniar")
+library(naniar)
 
 #######################
 ##### Load Data #######
@@ -12,54 +16,6 @@ data_collected <- import_local(path, sitename, trace = FALSE)
 bh <- qaqc(data_collected)
 
 TidesAll <- bh
-
-#Max and Min - DOES NOT WORK!
-### Cycle Analysis of data subset
-## Odd = Flood, Even = Ebb
-## Check that data start with a full flood, verify that all peaks/troughs are captured by the smooth
-s <- TidesAll[c(3114:385728), c(1,7)]
-s <- na.omit(s)
-m<-10
-f<-rep(1/(2*m+1),(2*m+1))
-smoo<-stats::filter(s$depth,f,sides=2)
-
-max<-(which(diff(sign(diff(smoo)))==-2)+1)
-min<-(which(diff(sign(diff(smoo)))==1)+1)
-pt<-sort(c(max,min))
-Cycles<-rep(NA,length(s[,1]))
-TideChange<-rep(NA,length(s[,1]))
-Tide.cy<-rep(NA,length(s[,1]))
-Tide.dS<-rep(NA,length(s[,1]))
-s<-data.frame(s,TideChange,Cycles,Tide.cy,Tide.dS)
-s$Cycles[1:pt[1]]<-1
-z<-length(pt)
-s<-s[1:pt[z],]
-
-for (k in 2:length(pt)) {
-	s$Cycles[pt[k-1]:pt[k]]<-k
-}
-
-#Viewing Depths Versus Filtered Depths
-
-plot(smoo, type= 'l')
-lines(s$depth, col = 'green')
-plot(s$depth, type = 'l', col = 'green')
-lines(smoo)
-
-# filtered <- data.frame(datetime = s$datetimestamp, smoo = smoo)
-# og <- TidesAll[TidesAll$datetimestamp>='2017-12-28 00:00:00' & TidesAll$datetimestamp<='2017-12-31 23:45:00',]
-# og <- og[c(1:length(og$datetimestamp)), c(1,7)]
-# og <- na.omit(og)
-# 
-# p1 <- ggplot(data.frame(smoo)) +
-#   geom_line() +
-#   ggtitle("Filtered Depths")
-# p2 <- ggplot(og, aes(x=og$datetimestamp, y=og$depth)) +
-#   geom_line() +
-#   ggtitle("Original")
-# 
-# grid.arrange(p1,p2,nrow=2,ncol=1)
-
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #Only Max - WORKS!
@@ -71,7 +27,12 @@ f<-rep(1/(2*m+1),(2*m+1))
 smoo2<-stats::filter(s2$depth,f,sides=2)
 
 max<-(which(diff(sign(diff(smoo2)))==-2)+1)
+
 sign_diff <- sign(diff(smoo2))
+
+sign_diff %>% replace_with_na(replace = list(x = 0))
+sign_diff <- na.locf(sign_diff)
+
 sign_diff2 <- diff(sign(diff(smoo2)))
 pt<-sort(max)
 Cycles<-rep(NA,length(s2[,1]))
@@ -109,8 +70,9 @@ y2017 <- na.omit(y2017)
 
 
 
-
-
+z <- zoo(c(NA, 2, NA, 1, 4, 5, 2, NA))
+na.fill(z, "extend")
+na.fill(z, -(1:3))
 
 
 
