@@ -1,6 +1,28 @@
 #Stringing Together and Combining Tide Data
 
 
+###############################################
+# WARNING WARNING WARNING #
+# This script is old and is a mix of different approaches used to join tidal data to the main data set.
+# The successful apprach was done in TidalMarch_CycleAnalysis_Sam.r script
+###############################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 rm(list = ls())
 # remove.packages(c("ggplot2", "plyr","dplyr", "reshape2", "lubridate", "SWMPr", "tidyverse"))
 # install.packages('ggplot2', dependencies = TRUE)

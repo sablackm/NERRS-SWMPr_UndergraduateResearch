@@ -18,6 +18,7 @@ TidesAll <- bh
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #Only Max - WORKS!
+#Will not have to worry about lower bound, if using LoadingData.R
 s2 <- TidesAll[c(3114:385728), c(1,7)]
 s2 <- na.omit(s2)
 

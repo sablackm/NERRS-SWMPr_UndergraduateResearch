@@ -25,75 +25,80 @@ library("data.table")
 #Importing Marshy Marsh Creek Data:
 
 #path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
-sitename = 'gndbhwq'
-data_collected <- import_local(path, sitename, trace = FALSE)
-bh <- qaqc(data_collected)
-
-bh_test <-bh
-bh_test$datetimestamp <- force_tz(bh_test$datetimestamp, tzone ="EST")
-
-#For Missing Values gnd_bh
-#DO
-missing_bh_do <- round(sum(is.na(bh_test$do_pct))/nrow(bh_test)*100,2)
-missing_bh_do
-
-#Organizing Monthly and Seasonal Sets within the dataframe
-site_analyzed<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
-Sitecode <- rep('gndbhwq',nrow(site_analyzed))
-site_analyzed <- cbind(site_analyzed, Sitecode)
-
-diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
-site_analyzed <-cbind(site_analyzed,diel)
-
-monthly<- format(as.POSIXct(site_analyzed$datetimestamp,format="%Y-%m-%d H:M"), "%Y-%m")
-site_analyzed<-cbind(site_analyzed,monthly)
-
-site_analyzed <- site_analyzed %>% 
-  mutate(Month = month(datetimestamp)) %>% 
-  mutate(Season = ifelse(Month == 1 | Month == 2, paste("Winter", year(datetimestamp), sep=" "),ifelse(Month == 12, paste("Winter", (year(datetimestamp)+1), sep=" "), ifelse(Month == 3 | Month == 4 | Month == 5, paste("Spring", year(datetimestamp), sep=" "),ifelse(Month == 6 | Month == 7 | Month == 8, paste("Summer", year(datetimestamp), sep=" "),ifelse(Month == 9 | Month == 10 | Month == 11, paste("Fall", year(datetimestamp), sep=" "),NA))))))
-
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-#path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\SouthAtlantic"
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthAtlantic"
-sitename = 'gtmfmwq'
-data_collected <- import_local(path, sitename, trace = FALSE)
-dc <- qaqc(data_collected)
-
-
-site_analyzed<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
-Sitecode <- rep('gtmfmwq',nrow(site_analyzed))
-site_analyzed <- cbind(site_analyzed, Sitecode)
-
-diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
-site_analyzed <-cbind(site_analyzed,diel)
-
-monthly<- format(as.POSIXct(site_analyzed$datetimestamp,format="%Y-%m-%d H:M"), "%Y-%m")
-site_analyzed<-cbind(site_analyzed,monthly)
-
-site_analyzed <- site_analyzed %>% 
-  mutate(Month = month(datetimestamp)) %>% 
-  mutate(Season = ifelse(Month == 1 | Month == 2, paste("Winter", year(datetimestamp), sep=" "),ifelse(Month == 12, paste("Winter", (year(datetimestamp)+1), sep=" "), ifelse(Month == 3 | Month == 4 | Month == 5, paste("Spring", year(datetimestamp), sep=" "),ifelse(Month == 6 | Month == 7 | Month == 8, paste("Summer", year(datetimestamp), sep=" "),ifelse(Month == 9 | Month == 10 | Month == 11, paste("Fall", year(datetimestamp), sep=" "),NA))))))
-
-
-
+# path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
+# sitename = 'gndbhwq'
+# data_collected <- import_local(path, sitename, trace = FALSE)
+# bh <- qaqc(data_collected)
+# 
+# bh_test <-bh
+# bh_test$datetimestamp <- force_tz(bh_test$datetimestamp, tzone ="EST")
+# 
+# #For Missing Values gnd_bh
+# #DO
+# missing_bh_do <- round(sum(is.na(bh_test$do_pct))/nrow(bh_test)*100,2)
+# missing_bh_do
+# 
+# #Organizing Monthly and Seasonal Sets within the dataframe
+# site_analyzed<- bh_test[bh_test$datetimestamp>='2007-01-01 00:00' & bh_test$datetimestamp<='2017-12-31 23:45',]
+# Sitecode <- rep('gndbhwq',nrow(site_analyzed))
+# site_analyzed <- cbind(site_analyzed, Sitecode)
+# 
+# diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
+# site_analyzed <-cbind(site_analyzed,diel)
+# 
+# monthly<- format(as.POSIXct(site_analyzed$datetimestamp,format="%Y-%m-%d H:M"), "%Y-%m")
+# site_analyzed<-cbind(site_analyzed,monthly)
+# 
+# site_analyzed <- site_analyzed %>% 
+#   mutate(Month = month(datetimestamp)) %>% 
+#   mutate(Season = ifelse(Month == 1 | Month == 2, paste("Winter", year(datetimestamp), sep=" "),ifelse(Month == 12, paste("Winter", (year(datetimestamp)+1), sep=" "), ifelse(Month == 3 | Month == 4 | Month == 5, paste("Spring", year(datetimestamp), sep=" "),ifelse(Month == 6 | Month == 7 | Month == 8, paste("Summer", year(datetimestamp), sep=" "),ifelse(Month == 9 | Month == 10 | Month == 11, paste("Fall", year(datetimestamp), sep=" "),NA))))))
+# 
+# #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 
+# 
+# #path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\SouthAtlantic"
+# path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthAtlantic"
+# sitename = 'gtmfmwq'
+# data_collected <- import_local(path, sitename, trace = FALSE)
+# dc <- qaqc(data_collected)
+# 
+# 
+# site_analyzed<- dc[dc$datetimestamp>='2007-01-01 00:00' & dc$datetimestamp<='2017-12-31 23:45',]
+# Sitecode <- rep('gtmfmwq',nrow(site_analyzed))
+# site_analyzed <- cbind(site_analyzed, Sitecode)
+# 
+# diel <- format(as.POSIXct(site_analyzed$datetimestamp, format="%Y-%m-%d H:M"), "%Y-%m-%d")
+# site_analyzed <-cbind(site_analyzed,diel)
+# 
+# monthly<- format(as.POSIXct(site_analyzed$datetimestamp,format="%Y-%m-%d H:M"), "%Y-%m")
+# site_analyzed<-cbind(site_analyzed,monthly)
+# 
+# site_analyzed <- site_analyzed %>% 
+#   mutate(Month = month(datetimestamp)) %>% 
+#   mutate(Season = ifelse(Month == 1 | Month == 2, paste("Winter", year(datetimestamp), sep=" "),ifelse(Month == 12, paste("Winter", (year(datetimestamp)+1), sep=" "), ifelse(Month == 3 | Month == 4 | Month == 5, paste("Spring", year(datetimestamp), sep=" "),ifelse(Month == 6 | Month == 7 | Month == 8, paste("Summer", year(datetimestamp), sep=" "),ifelse(Month == 9 | Month == 10 | Month == 11, paste("Fall", year(datetimestamp), sep=" "),NA))))))
+# 
+# 
+# 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+####Easy Import#####
+
+setwd("/Users/samuelblackman/Desktop/Research/NERRS/CurrentData")
+timeseries <- read.csv("gndbhwq data.csv")
+timeseries$datetimestamp <- as.POSIXct(timeseries$datetimestamp, format="%Y-%m-%d %H:%M:%S")
+timeseries <- na.omit(timeseries)
 
 
+#-----------------------------------
 
-
+#timeseries <- subset(timeseries, Month==12)
 
 
 
 #Tester
-timeseries <- site_analyzed[site_analyzed$datetimestamp>='2010-01-01 00:00' & site_analyzed$datetimestamp<='2010-12-31 23:45',]
-timeseries <- subset(timeseries, Month==12)
-timeseries <- timeseries[,c(-3,-8,-9,-10,-13)]
-
-
-timeseries<- na.omit(timeseries)
+#timeseries <- site_analyzed[site_analyzed$datetimestamp>='2010-01-01 00:00' & site_analyzed$datetimestamp<='2010-12-31 23:45',]
+#timeseries <- subset(timeseries, Month==12)
+#timeseries <- timeseries[,c(-3,-8,-9,-10,-13)]
+#timeseries<- na.omit(timeseries)
 
 fit <- lm(timeseries$do_pct ~  timeseries$temp + timeseries$depth + timeseries$turb + timeseries$sal, data=timeseries)
 summary(fit)
