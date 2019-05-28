@@ -9,17 +9,42 @@ library(naniar)
 ##### Load Data #######
 #######################
 
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthAtlantic"
-sitename = 'sapdcwq'
-data_collected <- import_local(path, sitename, trace = FALSE)
-bh <- qaqc(data_collected)
-
-TidesAll <- bh
+#Change according to which data set you want
+d <- read.csv("C:\\Users\\sabla\\Documents\\Research\\CurrentData\\sapdcwq data.csv")
+TidesAll <- d
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #Only Max - WORKS!
 #Will not have to worry about lower bound, if using LoadingData.R
-s2 <- TidesAll[c(3114:385728), c(1,7)]
+#Upperbound manually determined per dataset below:
+#sapdcwq: s2 <- TidesAll[c(3114:385728), c(1,7)]
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+
+s2 <- TidesAll[c(3114:385728), c(2,7)]
 s2 <- na.omit(s2)
 
 m<-10

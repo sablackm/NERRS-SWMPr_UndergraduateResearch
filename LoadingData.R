@@ -1,4 +1,6 @@
 #Loads data from all sites under review from the South Atlantic and Gulf of Mexico and saves into 2 csv files that can be loaded into other scripts
+#YOU WILL NEED TO CHANGE YOUR DIRECTORIES FOR THIS TO WORK.
+#THIS SHOULD BE THE FIRST FILE YOU RUN BEFORE ANY OTHER SCRIPTS
 
 rm(list = ls())
 # remove.packages(c("ggplot2", "plyr","dplyr", "reshape2", "lubridate", "SWMPr", "tidyverse"))
@@ -34,8 +36,8 @@ gndNames <- c("gndbhwq", "gndbcwq", "gndblwq", "gndpcwq")
 #GND Site
 for(i in 1:length(gndNames)){
   
-  #path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
-  path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
+  path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
+  #path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
   sitename <- gndNames[i]
   print(sitename)
   data_collected <- import_local(path, sitename, trace = FALSE)
@@ -62,7 +64,8 @@ for(i in 1:length(gndNames)){
   
   site_analyzed <- site_analyzed[,c(-3,-8,-9,-10,-13)]
   
-  setwd("/Users/samuelblackman/Desktop/Research/NERRS/CurrentData")
+  #setwd("/Users/samuelblackman/Desktop/Research/NERRS/CurrentData")
+  setwd("C:\\Users\\sabla\\Documents\\Research\\CurrentData")
   write.csv(site_analyzed, file = paste(sitename,"data.csv")) 
 }
   
@@ -72,8 +75,8 @@ apaNames <- c("apacpwq", "apadbwq", "apaebwq", "apaeswq")
 #APA Site
 for(i in 1:length(apaNames)){
   
-  #path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
-  path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
+  path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
+  #path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
   sitename <- apaNames[i]
   print(sitename)
   data_collected <- import_local(path, sitename, trace = FALSE)
@@ -97,7 +100,8 @@ for(i in 1:length(apaNames)){
  
   site_analyzed <- site_analyzed[,c(-3,-8,-9,-10,-13)]
   
-  setwd("/Users/samuelblackman/Desktop/Research/NERRS/CurrentData")
+  #setwd("/Users/samuelblackman/Desktop/Research/NERRS/CurrentData")
+  setwd("C:\\Users\\sabla\\Documents\\Research\\CurrentData")
   write.csv(site_analyzed, file = paste(sitename,"data.csv"))  
 }
 
@@ -107,8 +111,8 @@ for(i in 1:length(apaNames)){
 
 for(i in 1:length(southANames)){
   
-  #path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\SouthAtlantic"
-  path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthAtlantic"
+  path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\SouthAtlantic"
+  #path <- "/Users/samuelblackman/Desktop/Research/NERRS/SouthAtlantic"
   sitename <- southANames[i]
   print(southANames[i])
   data_collected <- import_local(path, sitename, trace = FALSE)
@@ -131,7 +135,8 @@ for(i in 1:length(southANames)){
   
   site_analyzed <- site_analyzed[,c(-3,-8,-9,-10,-13)]
   
-  setwd("/Users/samuelblackman/Desktop/Research/NERRS/CurrentData")
+  #setwd("/Users/samuelblackman/Desktop/Research/NERRS/CurrentData")
+  setwd("C:\\Users\\sabla\\Documents\\Research\\CurrentData")
   write.csv(site_analyzed, file = paste(sitename,"data.csv")) 
   
 }

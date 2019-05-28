@@ -1,4 +1,5 @@
-#Multilinear Regression Analysis of GND Sight (No Previous data manipulation besides QAQC)
+#Multilinear Regression Analysis of GND Site (No Previous data manipulation besides QAQC)
+#This loads the data or you can use the LoadingData.R option (much simpler) See below
 
 rm(list = ls())
 remove.packages(c("ggplot2", "plyr","dplyr", "reshape2", "lubridate", "SWMPr", "tidyverse"))
@@ -82,6 +83,7 @@ library("data.table")
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ####Easy Import#####
 
+#Using LoadingData.R script, provides the cleaned data sets, so just read in the csv
 setwd("/Users/samuelblackman/Desktop/Research/NERRS/CurrentData")
 timeseries <- read.csv("gndbhwq data.csv")
 timeseries$datetimestamp <- as.POSIXct(timeseries$datetimestamp, format="%Y-%m-%d %H:%M:%S")
@@ -91,15 +93,13 @@ timeseries <- na.omit(timeseries)
 #-----------------------------------
 
 #timeseries <- subset(timeseries, Month==12)
-
-
-
 #Tester
 #timeseries <- site_analyzed[site_analyzed$datetimestamp>='2010-01-01 00:00' & site_analyzed$datetimestamp<='2010-12-31 23:45',]
 #timeseries <- subset(timeseries, Month==12)
 #timeseries <- timeseries[,c(-3,-8,-9,-10,-13)]
 #timeseries<- na.omit(timeseries)
 
+#Regression Fit
 fit <- lm(timeseries$do_pct ~  timeseries$temp + timeseries$depth + timeseries$turb + timeseries$sal, data=timeseries)
 summary(fit)
 vif(fit)
@@ -126,14 +126,18 @@ df2 <- c(1,1,1,1)
 length(unique(df2))
 
 
-
+#Calculate Regression systematically for every year as per specified season
 getSeason <- "Fall"
+#Calculate Regression systematically for every month as per specified season
 #getMonth <- "2007-01"
 
-
+###
+###This loop currently looks to be calculating a regression for every month in 1 year.
+###
 for(i in 1:12){
   #Choosing Month/Season
   #calculcating Missing Values Percentages
+  #Can further narrow range of calculation by narrowing dataset range
   timeseries <- site_analyzed[site_analyzed$datetimestamp>='2009-01-01 00:00' & site_analyzed$datetimestamp<='2009-12-31 23:45',]
   timeseries <- subset(timeseries, Month==i)
   #timeseries <- subset(timeseries, Season==paste(getSeason, i))
@@ -150,7 +154,7 @@ for(i in 1:12){
   
   
   
-  
+  #2 options because I worked on a PC and a Mac
   #setwd("C:\\Users\\sabla\\Documents\\Research\\Plots\\Regression\\Summaries")
   setwd("/Users/samuelblackman/Desktop/Research/NERRS/Plots/Summaries")
   
@@ -158,6 +162,7 @@ for(i in 1:12){
     #Fitting the Data
     fit <- lm(timeseries$do_pct ~  timeseries$temp + timeseries$depth + timeseries$turb + timeseries$sal, data=timeseries)
     
+    #Save info to a text file
     sink(paste(i,paste(i, "2009 Radj.txt")))
     #sink('Summer Radj_2012.txt')
     print(summary(fit))
@@ -185,6 +190,8 @@ for(i in 1:12){
     
     #setwd("C:\\Users\\sabla\\Documents\\Research\\Plots\\Regression")
     setwd("/Users/samuelblackman/Desktop/Research/NERRS/Plots/GND_BC")
+    
+    #Save the plots to a file
     predicted_df <- data.frame(datetimestamp=timeseries$datetimestamp, do_pred = predict(fit, timeseries))
     
     jpeg(paste(i,paste(getSeason, ".jpeg")))

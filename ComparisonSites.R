@@ -1,4 +1,4 @@
-#Checking Sites for Comparison
+#Checking Missing Values of Sites for Comparison 
 
 #GND---------------------------------------------------------------------------------------------------------
 path <- "C:\\Users\\sabla\\Documents\\Research\\ThirdDownload_current\\GulfofMexico"

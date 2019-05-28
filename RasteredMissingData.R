@@ -1,3 +1,6 @@
+#Loads Data (do not need LoadingData.R script) and then systematically produces missing value raster images of sites from either
+#South Atlantic or Gulf of Mexico.
+
 rm(list = ls())
 # remove.packages(c("ggplot2", "plyr","dplyr", "reshape2", "lubridate", "SWMPr", "tidyverse"))
 # install.packages('ggplot2', dependencies = TRUE)
@@ -30,22 +33,22 @@ library("grid")
 excluded <- data.frame(matrix(ncol=1, nrow=300))
 count <- 1
 
-
+#Must do tese two reserves separately because gnd reserve requires time shift to EST
 gulfNames <- c("apacpwq", "apadbwq", "apaebwq", "apaeswq")
   #c("gndbhwq", "gndbcwq", "gndblwq", "gndpcwq")
  #Timezone shift not required: #c("apacpwq", "apadbwq", "apaebwq", "apaeswq", "apapcwq", "apalmwq")
 
 for(i in 1:length(gulfNames)){
 
-#path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
-path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
+path <- "C:\\Users\\sabla\\Documents\\Research\\Download5_Current\\GulfofMexico"
+#path <- "/Users/samuelblackman/Desktop/Research/NERRS/GulfOfMexico"
 sitename <- gulfNames[i]
 print(sitename)
 data_collected <- import_local(path, sitename, trace = FALSE)
 bh <- qaqc(data_collected)
 
 bh_test <-bh
-#bh_test$datetimestamp <- force_tz(bh_test$datetimestamp, tzone ="EST")
+#bh_test$datetimestamp <- force_tz(bh_test$datetimestamp, tzone ="EST")# THIS LINE MUST BE UNCOMMENTED WHEN LOADING GND RESERVE ONLY
 
 #For Missing Values gnd_bh
 #DO
@@ -69,6 +72,9 @@ site_analyzed <- site_analyzed %>%
   mutate(Year = year(datetimestamp))
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#sOUTH ATLANTIC LOADING BELOW. TO LOAD SOUTH ATLANTIC, COMMENT OUT THE ABOVE GULF OF MEXICO LOADING, THEN PROCEED AS USUAL.
+#Be careful for {}, the whole thing is a loop.
+
 
 # southANames <- c("sapdcwq", "acefcwq", "acespwq", "gtmpcwq", "niwolwq", "niwtawq", "nocrcwq", "acemcwq", "gtmfmwq", "gtmpiwq", "gtmsswq", "niwcbwq", "niwdcwq", "nocecwq", "sapcawq", "saphdwq", "sapldwq")
 # 
@@ -184,6 +190,7 @@ for( i in 1:nlevels(site_analyzed$monthly)){
   }
 }
 
+#Adds everything to the data set
 r2_month <- data.frame(calculations_monthly$monthly, rsquared_M, vifTemp, vifDepth, vifTurb, vifSal)
 colnames(r2_month) <- c("monthly","R^2 Adjusted", "VIF Temp", "VIF Depth", "VIF Turb", "VIF Sal")
 site_analyzed <- join(site_analyzed,r2_month, type="left")
@@ -239,5 +246,5 @@ site_analyzed <- join(site_analyzed,r2_month, type="left")
 #   print(x)
 # #dev.off()
 
-}
+} ## Closes out loop (the for loop line changes depending on whether or not you are loading SA or Gulf)
 
