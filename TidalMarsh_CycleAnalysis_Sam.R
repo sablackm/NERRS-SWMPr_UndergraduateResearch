@@ -18,32 +18,36 @@ TidesAll <- d
 #Will not have to worry about lower bound, if using LoadingData.R
 #Upperbound manually determined per dataset below:
 #sapdcwq: s2 <- TidesAll[c(3114:385728), c(1,7)]
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+#acefcwq: s2 <- TidesAll[c(33:385728), c(1,7)]
+#acemcwq: s2 <- TidesAll[c(29:385728), c(1,7)]
+#acespwq: s2 <- TidesAll[c(25:385728), c(1,7)]
+#apacpwq: s2 <- TidesAll[c(1:383000), c(1,7)]
+#apadbwq: s2 <- TidesAll[c(1:385728), c(1,7)]
+
+#apaebwq: s2 <- TidesAll[c(3:385728), c(1,7)]
+#apaeswq: s2 <- TidesAll[c(3:385728), c(1,7)]
+#These are the same site, but eb is bottom and es is surface
+
+#gndbcwq: s2 <- TidesAll[c(1:385728), c(1,7)]
+#gndbhwq: s2 <- TidesAll[c(1:385728), c(1,7)]
+#gndblwq: s2 <- TidesAll[c(76:385727), c(1,7)]
+#gndpcwq: s2 <- TidesAll[c(73:385728), c(1,7)]
+#gtmfmwq: s2 <- TidesAll[c(277:385728), c(1,7)]
+#gtmpcwq: s2 <- TidesAll[c(39:385728), c(1,7)]
+#gtmpiwq: s2 <- TidesAll[c(338:385728), c(1,7)]
+#gtmsswq: s2 <- TidesAll[c(375:384041), c(1,7)]
+#niwcbwq: s2 <- TidesAll[c(25:385728), c(1,7)]
+#niwdcwq: s2 <- TidesAll[c(26:385727), c(1,7)]
+#niwolwq: s2 <- TidesAll[c(26:385728), c(1,7)]
+#niwtawq: s2 <- TidesAll[c(26:385728), c(1,7)]
+#nocecwq: s2 <- TidesAll[c(25:385728), c(1,7)]
+#nocrcwq: s2 <- TidesAll[c(24:379041), c(1,7)]
+#sapcawq: s2 <- TidesAll[c(3114:385728), c(1,7)]
+#saphdwq: s2 <- TidesAll[c(3060:385216), c(1,7)]
+#sapldwq: s2 <- TidesAll[c(26:385728), c(1,7)]
 
 
+#sapdcwq
 s2 <- TidesAll[c(3114:385728), c(2,7)]
 s2 <- na.omit(s2)
 
